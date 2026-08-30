@@ -13,7 +13,7 @@ Turn the active build into a small explorable lesson. Use the current chat as th
 2. Organize the lesson around two direct questions: **What did I build?** and **How does it work?** Follow one real user action or piece of information through the complete system so the explanation stays grounded in the builder's work.
 3. Read [the teaching method](references/teaching-method.md), [the brand system](references/brand.md), and [the lesson format](references/lesson-format.md) before authoring.
 4. Write the lesson data as JSON. Default to `~/teach-lessons/<lesson-slug>/lesson.json` so generated artifacts do not dirty the product repository. Reuse that file for follow-up revisions.
-5. Build the standalone page with `scripts/build_lesson.py`. Serve only its lesson directory on `127.0.0.1` with `scripts/serve_lesson.py`; never bind the local lesson server to `0.0.0.0`.
+5. Resolve bundled files from the directory containing this `SKILL.md`, not from the builder's project. In Claude Code that directory is available as `${CLAUDE_SKILL_DIR}`. Build the standalone page with the bundled `scripts/build_lesson.py`. Serve only its lesson directory on `127.0.0.1` with the bundled `scripts/serve_lesson.py`; never bind the local lesson server to `0.0.0.0`.
 6. Open and inspect the rendered lesson in a browser. Check the actual text, diagram wrapping, mobile layout, keyboard focus, interactions, quiz explanations, and question-copy flow. Fix visible issues before handing it back.
 
 The output is one self-contained `index.html`. It must not need a package install, API key, account, CDN, or internet connection.
