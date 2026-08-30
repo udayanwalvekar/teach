@@ -40,34 +40,37 @@ start a new thread after installation so Codex loads the skill into the command 
 
 ## install as a Claude Code skill
 
-Teach requires Python 3 to build and serve the local lesson.
+Teach requires Python 3.9 or newer to build and serve the local lesson.
 
-on macOS, Linux, or WSL, clone the repository and run:
+on macOS, Linux, or WSL, paste one command:
+
+```sh
+curl -fsSL https://cdn.jsdelivr.net/gh/udayanwalvekar/teach@main/install.sh | sh
+```
+
+on Windows PowerShell, paste:
+
+```powershell
+irm https://cdn.jsdelivr.net/gh/udayanwalvekar/teach@main/install.ps1 | iex
+```
+
+the installer copies Teach to `~/.claude/skills/teach/`, the personal skill location used by Claude Code. start or restart Claude Code, finish building in a chat, and type `/teach` in that same chat.
+
+run the same one-command installer again to update. it moves the previous copy to a timestamped backup before replacing it.
+
+developers can install from a cloned repository instead:
 
 ```sh
 git clone --depth 1 https://github.com/udayanwalvekar/teach.git
 ./teach/install-claude.sh
 ```
 
-on Windows PowerShell, run:
+on Windows PowerShell:
 
 ```powershell
 git clone --depth 1 https://github.com/udayanwalvekar/teach.git
 .\teach\install-claude.ps1
 ```
-
-the installer copies Teach to `~/.claude/skills/teach/`, the personal skill location used by Claude Code. start or restart Claude Code, finish building in a chat, and type `/teach` in that same chat.
-
-to update an existing Claude installation, pull the latest repository and run:
-
-```sh
-git pull --ff-only
-./install-claude.sh --force
-```
-
-on Windows, use `git pull --ff-only` followed by `.\install-claude.ps1 -Force`.
-
-the installer moves the previous copy to a timestamped backup before replacing it.
 
 ## teaching style
 
