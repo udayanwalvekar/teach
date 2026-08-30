@@ -15,10 +15,14 @@ finish building something, then run Teach in the same chat:
 - **Codex:** type `$teach`, or open the `/` command picker and choose **Teach**.
 - **Claude Code:** type `/teach`.
 
-that is the whole prompt. if you want to steer the lesson, add a sentence after the command:
+that is the whole prompt. if you want to steer the lesson, use the complete version for your agent:
 
 ```text
-Teach me what I built in this chat. Explain what it does, how it works end to end, and what every technical term means in this specific build. Use clean interactive diagrams and finish with a short scenario quiz.
+Codex:
+$teach Teach me what I built in this chat. Explain what it does, how it works end to end, and what every technical term means in this specific build. Use clean interactive diagrams and finish with a short scenario quiz.
+
+Claude Code:
+/teach Teach me what I built in this chat. Explain what it does, how it works end to end, and what every technical term means in this specific build. Use clean interactive diagrams and finish with a short scenario quiz.
 ```
 
 teach creates a standalone `index.html` under `~/teach-lessons/` and opens it on a local-only address. there is no account, cloud upload, tracking, or model API inside the page.
@@ -36,11 +40,20 @@ start a new thread after installation so Codex loads the skill into the command 
 
 ## install as a Claude Code skill
 
-clone the repository and run the Claude installer:
+Teach requires Python 3 to build and serve the local lesson.
+
+on macOS, Linux, or WSL, clone the repository and run:
 
 ```sh
 git clone --depth 1 https://github.com/udayanwalvekar/teach.git
 ./teach/install-claude.sh
+```
+
+on Windows PowerShell, run:
+
+```powershell
+git clone --depth 1 https://github.com/udayanwalvekar/teach.git
+.\teach\install-claude.ps1
 ```
 
 the installer copies Teach to `~/.claude/skills/teach/`, the personal skill location used by Claude Code. start or restart Claude Code, finish building in a chat, and type `/teach` in that same chat.
@@ -51,6 +64,8 @@ to update an existing Claude installation, pull the latest repository and run:
 git pull --ff-only
 ./install-claude.sh --force
 ```
+
+on Windows, use `git pull --ff-only` followed by `.\install-claude.ps1 -Force`.
 
 the installer moves the previous copy to a timestamped backup before replacing it.
 

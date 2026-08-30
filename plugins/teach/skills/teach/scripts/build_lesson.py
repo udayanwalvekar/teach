@@ -53,6 +53,9 @@ def validate_lesson(lesson: dict[str, Any]) -> None:
         isinstance(meta["minutes"], int) and 1 <= meta["minutes"] <= 60,
         "meta.minutes must be an integer from 1 to 60.",
     )
+    agent = meta.get("agent", "codex")
+    require(agent in {"codex", "claude"}, "meta.agent must be codex or claude.")
+    meta["agent"] = agent
 
     story = lesson.get("story")
     require(isinstance(story, list), "Missing array: story")

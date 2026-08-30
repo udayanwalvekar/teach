@@ -2282,7 +2282,8 @@
           input.focus();
           return;
         }
-        const prompt = "$teach Follow-up on " + LESSON.meta.chat_context + ": " + question + " Please answer it and update my local lesson.";
+        const teachCommand = LESSON.meta.agent === "claude" ? "/teach" : "$teach";
+        const prompt = teachCommand + " Follow-up on " + LESSON.meta.chat_context + ": " + question + " Please answer it and update my local lesson.";
         copyText(prompt).then(function () {
           status.textContent = "Copied. Paste it into the same chat.";
         }).catch(function () {

@@ -15,6 +15,8 @@ finish building something, then run Teach in the same chat:
 - **Codex:** type `$teach`, or open the `/` command picker and choose **Teach**.
 - **Claude Code:** type `/teach` after installing this skill into `~/.claude/skills/teach/`.
 
+Teach requires Python 3 to build and serve its local lesson.
+
 teach creates a standalone `index.html` under `~/teach-lessons/` and opens it on a local-only address. there is no account, cloud upload, tracking, or model API inside the page.
 
 ## install it from github
