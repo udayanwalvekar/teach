@@ -88,5 +88,60 @@ finally {
   }
 }
 
-Write-Host "Installed Teach for Claude Code at $Destination"
-Write-Host "Start or restart Claude Code, finish a build chat, then run /teach"
+function Test-TeachInteractiveTerminal {
+  if (-not [Environment]::UserInteractive -or $env:NO_COLOR) {
+    return $false
+  }
+
+  try {
+    return -not [Console]::IsOutputRedirected
+  }
+  catch {
+    return $false
+  }
+}
+
+function Show-TeachSuccess {
+  if (-not (Test-TeachInteractiveTerminal)) {
+    Write-Output "Installed Teach for Claude Code at $Destination"
+    Write-Output "Start or restart Claude Code, finish a build chat, then run /teach"
+    return
+  }
+
+  Write-Host ""
+  foreach ($Frame in @(".  ", ".. ", "...")) {
+    Write-Host "`r  Preparing Teach$Frame" -NoNewline -ForegroundColor DarkGray
+    Start-Sleep -Milliseconds 110
+  }
+  Write-Host "`r$(' ' * 34)`r" -NoNewline
+
+  $ContentLines = @(
+    "* TEACH",
+    "",
+    "Ready for Claude Code",
+    "Installed to $Destination",
+    "",
+    "Next: restart Claude Code, finish a build, then run",
+    "/teach"
+  )
+  $ContentWidth = [Math]::Max(54, [int](($ContentLines | ForEach-Object { $_.Length } | Measure-Object -Maximum).Maximum))
+  $Border = "  +" + ("-" * ($ContentWidth + 4)) + "+"
+
+  Write-Host $Border -ForegroundColor DarkGray
+  for ($Index = 0; $Index -lt $ContentLines.Count; $Index++) {
+    $LineColor = if ($Index -eq 0) {
+      "DarkYellow"
+    } elseif ($ContentLines[$Index] -eq "/teach") {
+      "Cyan"
+    } elseif ($ContentLines[$Index] -eq "Ready for Claude Code") {
+      "White"
+    } else {
+      "Gray"
+    }
+    Write-Host ("  |  " + $ContentLines[$Index].PadRight($ContentWidth) + "  |") -ForegroundColor $LineColor
+  }
+  Write-Host $Border -ForegroundColor DarkGray
+  Write-Host ""
+}
+
+Show-TeachSuccess

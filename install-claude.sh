@@ -78,5 +78,26 @@ fi
 mv "$staging_root/teach" "$destination"
 installed=true
 
-echo "Installed Teach for Claude Code at $destination"
-echo "Start or restart Claude Code, finish a build chat, then run /teach"
+if [ -t 1 ] && [ "${TERM:-dumb}" != "dumb" ] && [ -z "${NO_COLOR:-}" ]; then
+  blue='\033[38;5;69m'
+  citron='\033[38;5;191m'
+  coral='\033[38;5;203m'
+  dim='\033[2m'
+  reset='\033[0m'
+
+  for frame in '·' '✦' '✦ ·' '✦ · ·' '✦ · · ✦'; do
+    printf "\r  ${blue}%s${reset}  ${dim}assembling your teacher…${reset}" "$frame"
+    sleep 0.09
+  done
+  printf '\r\033[2K'
+  printf "\n  ${blue}╭──────────────────────────────────────────╮${reset}\n"
+  printf "  ${blue}│${reset}  ${citron}✦${reset}  ${coral}TEACH IS READY${reset}                        ${blue}│${reset}\n"
+  printf "  ${blue}│${reset}     you built it. now understand it.      ${blue}│${reset}\n"
+  printf "  ${blue}╰──────────────────────────────────────────╯${reset}\n\n"
+  printf "  ${dim}Installed to %s${reset}\n" "$destination"
+  printf "  ${dim}Restart Claude Code, return to your build,${reset}\n"
+  printf "  then type  ${citron}/teach${reset}\n\n"
+else
+  echo "Installed Teach for Claude Code at $destination"
+  echo "Start or restart Claude Code, finish a build chat, then run /teach"
+fi
