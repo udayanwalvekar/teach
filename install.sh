@@ -2,7 +2,6 @@
 
 set -eu
 
-source_base_url="${TEACH_SOURCE_BASE_URL:-https://cdn.jsdelivr.net/gh/udayanwalvekar/teach@main}"
 destination="${TEACH_CLAUDE_DESTINATION:-${HOME}/.claude/skills/teach}"
 download_root=$(mktemp -d "${TMPDIR:-/tmp}/teach-download.XXXXXX")
 
@@ -27,6 +26,19 @@ elif command -v wget >/dev/null 2>&1; then
 else
   echo "Teach needs curl or wget to download from GitHub." >&2
   exit 1
+fi
+
+if [ -n "${TEACH_SOURCE_BASE_URL:-}" ]; then
+  source_base_url=${TEACH_SOURCE_BASE_URL%/}
+else
+  release_metadata="$download_root/release.json"
+  download "https://data.jsdelivr.com/v1/package/resolve/gh/udayanwalvekar/teach@latest" "$release_metadata"
+  release_version=$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([0-9A-Za-z._-]*\)".*/\1/p' "$release_metadata" | head -n 1)
+  if ! printf '%s\n' "$release_version" | grep -Eq '^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$'; then
+    echo "Teach could not resolve a valid release from GitHub." >&2
+    exit 1
+  fi
+  source_base_url="https://cdn.jsdelivr.net/gh/udayanwalvekar/teach@v$release_version"
 fi
 
 manifest="$download_root/claude-files.txt"

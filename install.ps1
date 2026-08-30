@@ -3,7 +3,13 @@ $ErrorActionPreference = "Stop"
 $SourceBaseUrl = if ($env:TEACH_SOURCE_BASE_URL) {
   $env:TEACH_SOURCE_BASE_URL.TrimEnd("/")
 } else {
-  "https://cdn.jsdelivr.net/gh/udayanwalvekar/teach@main"
+  $Resolution = Invoke-RestMethod -UseBasicParsing -Uri "https://data.jsdelivr.com/v1/package/resolve/gh/udayanwalvekar/teach@latest"
+  $ResolvedVersion = [string]$Resolution.version
+  $SemVerPattern = "^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$"
+  if (-not $ResolvedVersion -or $ResolvedVersion -notmatch $SemVerPattern) {
+    throw "jsDelivr returned an invalid Teach release version: $ResolvedVersion"
+  }
+  "https://cdn.jsdelivr.net/gh/udayanwalvekar/teach@v$ResolvedVersion"
 }
 $Destination = if ($env:TEACH_CLAUDE_DESTINATION) {
   $env:TEACH_CLAUDE_DESTINATION
