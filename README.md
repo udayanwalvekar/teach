@@ -45,18 +45,18 @@ Teach requires Python 3.9 or newer to build and serve the local lesson.
 on macOS, Linux, or WSL, paste one command:
 
 ```sh
-curl -fsSL https://cdn.jsdelivr.net/gh/udayanwalvekar/teach@main/install.sh | sh
+curl -fsSL "https://github.com/udayanwalvekar/teach/releases/download/v0.2.1/install.sh?download=1" | sh
 ```
 
 on Windows PowerShell, paste:
 
 ```powershell
-irm https://cdn.jsdelivr.net/gh/udayanwalvekar/teach@main/install.ps1 | iex
+irm "https://github.com/udayanwalvekar/teach/releases/download/v0.2.1/install.ps1?download=1" | iex
 ```
 
 the installer copies Teach to `~/.claude/skills/teach/`, the personal skill location used by Claude Code. start or restart Claude Code, finish building in a chat, and type `/teach` in that same chat.
 
-run the same one-command installer again to update. it moves the previous copy to a timestamped backup before replacing it.
+to update later, copy the current install command from this README and run it again. the installer moves the previous copy to a timestamped backup before replacing it.
 
 developers can install from a cloned repository instead:
 
