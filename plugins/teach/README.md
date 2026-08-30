@@ -2,7 +2,7 @@
 
 you built it. now understand it.
 
-teach turns the thing you just made in Codex into a private interactive explanation on your own computer. it uses the current chat, so you do not need to explain the project again.
+teach turns the thing you just made in Codex or Claude Code into a private interactive explanation on your own computer. it uses the current chat, so you do not need to explain the project again.
 
 it answers two questions first: **what did i build?** and **how does it work?** then it follows one real action through the moving parts with clean, minimal diagrams. it names the actual tech stack—interface, frontend, backend, database, function calls, APIs, state, and hosting when they exist—and explains the job each part performs. every technical word gets a Kindle-style dotted underline: hover, tap, or focus it for a plain-English definition and what it means in this particular build. the same definitions form a complete dictionary at the end.
 
@@ -10,7 +10,12 @@ when something still feels fuzzy, the page helps you copy a better follow-up que
 
 ## use it
 
-finish building something, open the slash-command picker, and choose **Teach**. you can also type `$teach`, which is the explicit text form of the command.
+finish building something, then run Teach in the same chat:
+
+- **Codex:** type `$teach`, or open the `/` command picker and choose **Teach**.
+- **Claude Code:** type `/teach` after installing this skill into `~/.claude/skills/teach/`.
+
+Teach requires Python 3 to build and serve its local lesson.
 
 teach creates a standalone `index.html` under `~/teach-lessons/` and opens it on a local-only address. there is no account, cloud upload, tracking, or model API inside the page.
 
@@ -37,4 +42,4 @@ v1 does not host lessons on GrowthX, save progress across devices, or answer que
 
 ## package shape
 
-this repository is a Codex plugin containing one explicit-invocation skill. the lesson runtime is dependency-free Python plus a self-contained HTML shell.
+this repository ships the same Teach skill for both agents: as a Codex plugin and as a personal Claude Code skill. the lesson runtime is dependency-free Python plus a self-contained HTML shell.

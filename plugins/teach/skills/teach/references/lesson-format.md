@@ -13,6 +13,7 @@ Required fields:
 - `builder_win`: one concrete sentence about what they accomplished
 - `minutes`: estimated reading and interaction time
 - `chat_context`: a short phrase included when copying a follow-up question
+- `agent`: `codex` or `claude`, so copied follow-up questions use the correct Teach command. Older lesson files without this field default to `codex`.
 
 ## `story`
 
