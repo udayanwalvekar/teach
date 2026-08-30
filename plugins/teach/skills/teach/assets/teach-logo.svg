@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 96" role="img" aria-label="Teach">
+  <rect width="320" height="96" rx="20" fill="#F7F1E3"/>
+  <path d="M24 62C39 62 38 30 57 30s16 34 35 34" fill="none" stroke="#3155E7" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="25" cy="62" r="9" fill="#D9F95F" stroke="#17202A" stroke-width="4"/>
+  <circle cx="57" cy="30" r="9" fill="#FFFDF7" stroke="#17202A" stroke-width="4"/>
+  <circle cx="92" cy="64" r="9" fill="#FF7968" stroke="#17202A" stroke-width="4"/>
+  <text x="122" y="63" fill="#17202A" font-family="Avenir Next, Segoe UI, sans-serif" font-size="47" font-weight="700" letter-spacing="-2">teach</text>
+</svg>

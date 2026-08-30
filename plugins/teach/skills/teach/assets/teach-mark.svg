@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Teach mark">
+  <rect width="64" height="64" rx="14" fill="#F7F1E3"/>
+  <path d="M13 42C21 42 20 20 31 20s9 24 20 24" fill="none" stroke="#3155E7" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="14" cy="42" r="7" fill="#D9F95F" stroke="#17202A" stroke-width="3"/>
+  <circle cx="31" cy="20" r="7" fill="#FFFDF7" stroke="#17202A" stroke-width="3"/>
+  <circle cx="50" cy="44" r="7" fill="#FF7968" stroke="#17202A" stroke-width="3"/>
+</svg>

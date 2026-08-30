@@ -1,0 +1,9 @@
+interface:
+  display_name: "Teach"
+  short_description: "Understand what you built and how it works"
+  icon_small: "./assets/teach-mark.svg"
+  icon_large: "./assets/teach-logo.svg"
+  brand_color: "#3155E7"
+  default_prompt: "Use $teach to explain what I built in this chat, show how it works end to end, and define every technical term in an interactive local page."
+policy:
+  allow_implicit_invocation: false
