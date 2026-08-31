@@ -47,11 +47,6 @@ try {
   New-Item -ItemType Directory -Path $StagedSkill | Out-Null
 
   $SkillText = [IO.File]::ReadAllText((Join-Path $SourceDir "SKILL.md"))
-  $FrontmatterEnd = $SkillText.IndexOf("`n---", 4)
-  if ($FrontmatterEnd -lt 0) {
-    throw "Teach SKILL.md has invalid frontmatter."
-  }
-  $SkillText = $SkillText.Insert($FrontmatterEnd, "`ndisable-model-invocation: true")
   $SkillText += "`n`n## Builder request`n`n`$ARGUMENTS`n"
   [IO.File]::WriteAllText(
     (Join-Path $StagedSkill "SKILL.md"),
@@ -102,9 +97,13 @@ function Test-TeachInteractiveTerminal {
 }
 
 function Show-TeachSuccess {
+  if ($env:TEACH_QUIET_INSTALL) {
+    return
+  }
+
   if (-not (Test-TeachInteractiveTerminal)) {
     Write-Output "Installed Teach for Claude Code at $Destination"
-    Write-Output "Start or restart Claude Code, finish a build chat, then run /teach"
+    Write-Output "Start or restart Claude Code, finish a build chat, then type teach"
     return
   }
 
@@ -121,8 +120,8 @@ function Show-TeachSuccess {
     "Ready for Claude Code",
     "Installed to $Destination",
     "",
-    "Next: restart Claude Code, finish a build, then run",
-    "/teach"
+    "Next: restart Claude Code, finish a build, then type",
+    "teach"
   )
   $ContentWidth = [Math]::Max(54, [int](($ContentLines | ForEach-Object { $_.Length } | Measure-Object -Maximum).Maximum))
   $Border = "  +" + ("-" * ($ContentWidth + 4)) + "+"
@@ -131,7 +130,7 @@ function Show-TeachSuccess {
   for ($Index = 0; $Index -lt $ContentLines.Count; $Index++) {
     $LineColor = if ($Index -eq 0) {
       "DarkYellow"
-    } elseif ($ContentLines[$Index] -eq "/teach") {
+    } elseif ($ContentLines[$Index] -eq "teach") {
       "Cyan"
     } elseif ($ContentLines[$Index] -eq "Ready for Claude Code") {
       "White"

@@ -57,11 +57,7 @@ cleanup() {
 trap cleanup EXIT
 trap 'exit 1' HUP INT TERM
 mkdir "$staging_root/teach"
-awk '
-  NR == 1 { print; next }
-  !added && $0 == "---" { print "disable-model-invocation: true"; added = 1 }
-  { print }
-' "$source_dir/SKILL.md" > "$staging_root/teach/SKILL.md"
+cp "$source_dir/SKILL.md" "$staging_root/teach/SKILL.md"
 printf '\n## Builder request\n\n$ARGUMENTS\n' >> "$staging_root/teach/SKILL.md"
 for resource_dir in assets examples references scripts; do
   if [ -d "$source_dir/$resource_dir" ]; then
@@ -78,7 +74,7 @@ fi
 mv "$staging_root/teach" "$destination"
 installed=true
 
-if [ -t 1 ] && [ "${TERM:-dumb}" != "dumb" ] && [ -z "${NO_COLOR:-}" ]; then
+if [ -z "${TEACH_QUIET_INSTALL:-}" ] && [ -t 1 ] && [ "${TERM:-dumb}" != "dumb" ] && [ -z "${NO_COLOR:-}" ]; then
   blue='\033[38;5;69m'
   citron='\033[38;5;191m'
   coral='\033[38;5;203m'
@@ -96,8 +92,8 @@ if [ -t 1 ] && [ "${TERM:-dumb}" != "dumb" ] && [ -z "${NO_COLOR:-}" ]; then
   printf "  ${blue}╰──────────────────────────────────────────╯${reset}\n\n"
   printf "  ${dim}Installed to %s${reset}\n" "$destination"
   printf "  ${dim}Restart Claude Code, return to your build,${reset}\n"
-  printf "  then type  ${citron}/teach${reset}\n\n"
-else
+  printf "  then type  ${citron}teach${reset}\n\n"
+elif [ -z "${TEACH_QUIET_INSTALL:-}" ]; then
   echo "Installed Teach for Claude Code at $destination"
-  echo "Start or restart Claude Code, finish a build chat, then run /teach"
+  echo "Start or restart Claude Code, finish a build chat, then type teach"
 fi

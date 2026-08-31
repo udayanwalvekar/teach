@@ -1,0 +1,41 @@
+#!/bin/sh
+
+set -eu
+
+state=${TEACH_TEST_CODEX_STATE:?}
+mkdir -p "$state"
+printf '%s\n' "$*" >> "$state/actions"
+
+case "$*" in
+  "plugin marketplace list --json")
+    if [ -f "$state/marketplace" ]; then
+      printf '{"marketplaces":[{"name":"teach","root":"%s"}]}' "$TEACH_TEST_REPO"
+    else
+      printf '{"marketplaces":[]}'
+    fi
+    ;;
+  "plugin marketplace add udayanwalvekar/teach")
+    touch "$state/marketplace"
+    ;;
+  "plugin marketplace upgrade teach")
+    test -f "$state/marketplace"
+    ;;
+  "plugin list --json")
+    if [ -f "$state/plugin" ]; then
+      printf '{"installed":[{"pluginId":"teach@teach","installed":true}]}'
+    else
+      printf '{"installed":[]}'
+    fi
+    ;;
+  "plugin add teach@teach")
+    test -f "$state/marketplace"
+    touch "$state/plugin"
+    ;;
+  "plugin remove teach@teach")
+    rm "$state/plugin"
+    ;;
+  *)
+    echo "Unexpected fake Codex command: $*" >&2
+    exit 2
+    ;;
+esac

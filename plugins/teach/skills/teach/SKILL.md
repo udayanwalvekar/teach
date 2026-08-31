@@ -1,9 +1,11 @@
 ---
 name: teach
-description: Turn the product, feature, automation, or technical system just built or discussed in the current chat into an evidence-backed local learning module for a non-developer. Use when the builder explicitly invokes Teach or asks to understand what they just built; do not use for ordinary implementation, code documentation, or generic explanations unrelated to the active build.
+description: Turn the product, feature, automation, or technical system just built or discussed in the current chat into an evidence-backed local learning module for a non-developer. Use when the builder says "teach", explicitly invokes Teach, or asks to understand what they just built; do not use for ordinary implementation, code documentation, or generic explanations unrelated to the active build.
 ---
 
 # Teach
+
+The single word `teach` is a complete request. Do not ask the builder to restate the teaching level, technologies, or system boundaries; those decisions are part of this skill.
 
 Teach uses two separate agents because investigating code and designing learning are different jobs. Never ask one agent to do both in the same pass.
 

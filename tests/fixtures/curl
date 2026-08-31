@@ -1,0 +1,23 @@
+#!/bin/sh
+
+set -eu
+
+test "$1" = "-fsSL"
+url=$2
+test "$3" = "-o"
+destination=$4
+
+printf '%s\n' "$url" >> "${TEACH_TEST_CURL_LOG:?}"
+
+prefix="https://raw.githubusercontent.com/udayanwalvekar/teach/"
+case "$url" in
+  "$prefix"*)
+    revision_and_path=${url#"$prefix"}
+    relative_path=${revision_and_path#*/}
+    cp "${TEACH_TEST_REPO:?}/$relative_path" "$destination"
+    ;;
+  *)
+    echo "Unexpected fake curl URL: $url" >&2
+    exit 2
+    ;;
+esac
