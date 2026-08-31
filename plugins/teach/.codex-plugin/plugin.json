@@ -1,7 +1,7 @@
 {
   "name": "teach",
-  "version": "0.2.1",
-  "description": "Understand what you built, how it works, and every technical word it uses.",
+  "version": "0.3.0",
+  "description": "Understand the problem, what you built, and how it works.",
   "author": {
     "name": "Udayan Walvekar",
     "url": "https://github.com/udayanwalvekar"
@@ -14,14 +14,14 @@
   "interface": {
     "displayName": "Teach",
     "shortDescription": "Learn what you just built.",
-    "longDescription": "Teach explains what you built and traces how it works in a private interactive HTML page, with visualizations, Kindle-style jargon tooltips, a complete dictionary, follow-up prompts, and a short quiz.",
+    "longDescription": "Teach turns the current build conversation into a short, private lesson: the problem, what you built, and one clear flow showing how it works.",
     "developerName": "Udayan Walvekar",
     "category": "Education",
     "capabilities": [],
     "websiteURL": "https://github.com/udayanwalvekar/teach",
-    "brandColor": "#3155E7",
+    "brandColor": "#222222",
     "composerIcon": "./skills/teach/assets/teach-mark.svg",
     "logo": "./skills/teach/assets/teach-logo.svg",
-    "defaultPrompt": "Explain what I built in this chat, show how it works end to end, and define every technical term in an interactive local page."
+    "defaultPrompt": "Explain the problem, what I built, and how it works in a short visual local page."
   }
 }

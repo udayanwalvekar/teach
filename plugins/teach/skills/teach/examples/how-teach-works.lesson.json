@@ -1,439 +1,72 @@
 {
   "meta": {
-    "agent": "codex",
     "slug": "how-teach-works",
-    "title": "How your build becomes a lesson",
+    "title": "How Teach turns your build into a lesson",
     "subject": "Teach",
-    "one_liner": "Teach turns the work already sitting in your chat into a visual lesson that stays on your computer.",
-    "builder_win": "You built a reusable teacher that helps non-developers understand the technology they just made.",
-    "minutes": 8,
-    "chat_context": "the Teach skill we built"
+    "one_liner": "Run Teach after building something. It reads the work already in your chat and opens a short visual explanation in your browser.",
+    "minutes": 3
   },
   "story": [
     {
-      "id": "translation-line",
-      "kicker": "01 · the big picture",
-      "title": "It is a translation line, not a second builder",
-      "plain": "The hard work has already happened in the chat. Teach reads that trail, finds the few ideas that make the build work, and turns them into a lesson source. A small builder then pours that source into one interactive web page.",
-      "takeaway": "The chat supplies the truth; Teach changes how that truth is explained.",
-      "analogy": {
-        "title": "Like the guide at the end of a factory tour",
-        "body": "The guide did not assemble the product. They watched the line, chose the useful stops, and explained what each machine contributed.",
-        "mapping": [
-          { "familiar": "Factory", "real": "Your build chat" },
-          { "familiar": "Guide", "real": "Teach" },
-          { "familiar": "Tour map", "real": "Lesson JSON" },
-          { "familiar": "Visitor booklet", "real": "Local HTML page" }
-        ],
-        "limit": "A guide can only explain what the tour reveals. If the chat never recorded an important decision, Teach should call out the gap instead of inventing one."
-      },
+      "id": "problem",
+      "kicker": "01 · the problem",
+      "title": "A finished build can still be hard to explain",
+      "plain": "The useful thinking is scattered across messages, decisions, mistakes, and fixes. By the end, the thing works, but the builder may not have one simple picture of what they made or why it works.",
+      "takeaway": "Teach turns the trail of building into a mental model you can remember."
+    },
+    {
+      "id": "built",
+      "kicker": "02 · what you built",
+      "title": "A saved teaching prompt for your coding agent",
+      "plain": "Teach is installed as a skill or plugin. When you run it in the same conversation, it asks the coding agent to find the important story in that work and turn it into a short visual lesson.",
+      "takeaway": "You do not explain the project again because Teach starts with the context already in the chat."
+    },
+    {
+      "id": "works",
+      "kicker": "03 · how it works",
+      "title": "One command becomes one local page",
+      "plain": "Teach follows a short path from your active conversation to a page in your browser. It checks project files only when the chat leaves an important gap.",
+      "takeaway": "The finished page stays on your computer; Teach does not upload it to Google or another hosted service.",
       "visual": {
         "type": "flow",
-        "title": "One build trail becomes one teachable story",
+        "title": "What happens after you run Teach",
         "steps": [
           {
-            "label": "Build chat",
-            "detail": "Decisions, code changes, mistakes, and fixes already live here.",
-            "technical": "conversation context"
+            "label": "Run Teach",
+            "detail": "Typing $teach in Codex or /teach in Claude Code starts the saved teaching instructions in the same conversation."
           },
           {
-            "label": "Mental model",
-            "detail": "Teach separates the big idea from the supporting details.",
-            "technical": "lesson planning"
+            "label": "Read the build trail",
+            "detail": "The coding agent reads the conversation and checks only the files needed to confirm what happened."
           },
           {
-            "label": "Lesson source",
-            "detail": "The explanation becomes structured text, diagrams, scenarios, and questions.",
-            "technical": "lesson.json"
+            "label": "Find three answers",
+            "detail": "It distills the work into the problem, what you built, and how the result works from start to finish."
           },
           {
-            "label": "Local page",
-            "detail": "Everything is packed into a single interactive file on your computer.",
-            "technical": "index.html"
-          }
-        ]
-      }
-    },
-    {
-      "id": "five-parts",
-      "kicker": "02 · the moving parts",
-      "title": "Five small parts do the whole job",
-      "plain": "Teach is not one giant application. The skill tells Codex how to teach. The lesson source holds the facts. The HTML shell decides how those facts look and move. The build script joins them. A tiny local server gives your browser a safe address to open.",
-      "takeaway": "Keeping content separate from presentation makes every new lesson faster and more consistent.",
-      "analogy": {
-        "title": "Like a pop-up exhibition kit",
-        "body": "A curator brings labels, a floor plan, reusable display stands, and instructions. The museum can stage a new exhibition without rebuilding the room.",
-        "mapping": [
-          { "familiar": "Exhibit labels", "real": "Lesson JSON" },
-          { "familiar": "Display stands", "real": "HTML shell" },
-          { "familiar": "Setup instructions", "real": "Teach skill" },
-          { "familiar": "Installer", "real": "Build script" }
-        ],
-        "limit": "Unlike a physical exhibition, this page cannot see new facts after it is built. Codex must rebuild it when the lesson changes."
-      },
-      "visual": {
-        "type": "map",
-        "title": "What talks to what",
-        "nodes": [
-          {
-            "id": "chat",
-            "label": "Current chat",
-            "detail": "The evidence about what was built.",
-            "technical": "context"
-          },
-          {
-            "id": "skill",
-            "label": "Teach skill",
-            "detail": "The teaching method and rules.",
-            "technical": "SKILL.md"
-          },
-          {
-            "id": "source",
-            "label": "Lesson source",
-            "detail": "The editable story and interactions.",
-            "technical": "JSON"
-          },
-          {
-            "id": "shell",
-            "label": "Lesson shell",
-            "detail": "The reusable visual experience.",
-            "technical": "HTML + CSS + JavaScript"
-          },
-          {
-            "id": "browser",
-            "label": "Your browser",
-            "detail": "Where the private lesson runs.",
-            "technical": "localhost"
-          }
-        ],
-        "links": [
-          { "from": "chat", "to": "skill" },
-          { "from": "skill", "to": "source" },
-          { "from": "source", "to": "shell" },
-          { "from": "shell", "to": "browser" }
-        ]
-      }
-    },
-    {
-      "id": "local-boundary",
-      "kicker": "03 · the trust boundary",
-      "title": "Local means the page stays in your room",
-      "plain": "The finished lesson is served only on the loopback address, which is the computer talking to itself. It does not need a GrowthX account, database, model key, tracking script, or internet connection. That keeps version one easy to trust and easy to install.",
-      "takeaway": "Local-first removes the product machinery that is not needed to learn from one chat.",
-      "analogy": {
-        "title": "A whiteboard in your study, not a billboard",
-        "body": "You can write, erase, and learn from the whiteboard without publishing it outside your home.",
-        "mapping": [
-          { "familiar": "Your study", "real": "Your computer" },
-          { "familiar": "Whiteboard", "real": "The HTML lesson" },
-          { "familiar": "Walking into the room", "real": "Opening 127.0.0.1" }
-        ],
-        "limit": "Someone with access to your computer can still open the file. Local does not mean encrypted or access-controlled."
-      },
-      "visual": {
-        "type": "compare",
-        "title": "Version one and the possible hosted version solve different problems",
-        "left": {
-          "label": "Local v1",
-          "detail": "A private lesson for the builder who just finished the chat.",
-          "points": [
-            "One standalone page",
-            "Runs at 127.0.0.1",
-            "No login or database",
-            "Questions return to the same Codex chat"
-          ]
-        },
-        "right": {
-          "label": "GrowthX v2",
-          "detail": "A shareable learning product with real accounts and persistence.",
-          "points": [
-            "Hosted lesson URLs",
-            "Saved progress",
-            "In-page AI answers",
-            "Analytics and permissions"
-          ]
-        }
-      }
-    },
-    {
-      "id": "question-loop",
-      "kicker": "04 · the learning loop",
-      "title": "A question should improve the lesson, not disappear",
-      "plain": "The page can help the learner form a clear question, but it does not pretend to contain an AI assistant. It copies a prompt back to the chat where Codex already knows the build. Codex answers, updates the lesson source, and rebuilds the same page.",
-      "takeaway": "Follow-up questions stay grounded because the same build conversation answers them.",
-      "analogy": {
-        "title": "Like raising your hand during a workshop",
-        "body": "The worksheet helps you notice the gap, but the instructor answers it using the project on the table.",
-        "mapping": [
-          { "familiar": "Worksheet", "real": "Lesson page" },
-          { "familiar": "Raising your hand", "real": "Copying the follow-up" },
-          { "familiar": "Instructor", "real": "Codex in the original chat" }
-        ],
-        "limit": "The first version needs the learner to paste or send the copied prompt. It is not a live chat embedded in the page."
-      },
-      "visual": {
-        "type": "timeline",
-        "title": "One question makes the next edition better",
-        "steps": [
-          {
-            "label": "Notice a gap",
-            "detail": "A diagram or explanation still feels fuzzy.",
-            "technical": "learner reflection"
-          },
-          {
-            "label": "Ask from the page",
-            "detail": "Teach formats the question with enough build context.",
-            "technical": "$teach follow-up"
-          },
-          {
-            "label": "Answer in chat",
-            "detail": "Codex can use the original decisions and code as evidence.",
-            "technical": "active conversation"
-          },
-          {
-            "label": "Rebuild the page",
-            "detail": "The source is updated and the local lesson gets a clearer edition.",
-            "technical": "lesson.json → index.html"
+            "label": "Open the lesson",
+            "detail": "A small Python script combines that explanation with the Teach page and opens the local HTML in your browser."
           }
         ]
       }
     }
   ],
-  "stack": {
-    "summary": "Teach v1 has an instruction layer, a small page builder, an editable lesson file, and a browser interface. It has no separate backend or database: everything is built and served on the builder's own computer.",
-    "items": [
-      {
-        "layer": "instructions",
-        "technology": "Codex skill",
-        "role": "The Teach skill tells Codex how to inspect the build, explain it, draw the diagrams, and define the jargon.",
-        "connection": "Codex follows the skill and writes the explanation into lesson.json."
-      },
-      {
-        "layer": "page builder",
-        "technology": "Python",
-        "role": "A short Python script checks the lesson source and combines it with the reusable page design.",
-        "connection": "A function call gives the script lesson.json; the script returns a finished index.html file."
-      },
-      {
-        "layer": "editable content",
-        "technology": "JSON",
-        "role": "This file stores the explanation, diagrams, tech stack, dictionary, scenarios, quiz, and follow-up questions.",
-        "connection": "The page builder reads it and places each named piece into the matching part of the interface."
-      },
-      {
-        "layer": "interface",
-        "technology": "HTML, CSS, and JavaScript",
-        "role": "Together these form the frontend: HTML holds the content, CSS controls the appearance, and JavaScript makes it respond to the learner.",
-        "connection": "The browser reads the finished file and turns it into the clickable lesson the learner sees."
-      },
-      {
-        "layer": "local address",
-        "technology": "Local server",
-        "role": "A tiny server gives the finished page a private address that only the same computer can open.",
-        "connection": "It sends index.html to the browser at 127.0.0.1; nothing is uploaded to a hosted service."
-      }
-    ]
-  },
-  "concepts": [
+  "technologies": [
     {
-      "term": "Skill",
-      "aliases": ["Teach skill", "Codex skill", "SKILL.md"],
-      "plain": "A reusable set of instructions that teaches Codex how to perform a particular kind of work.",
-      "in_build": "Teach's skill defines the lesson workflow, teacher voice, visual rules, and local-only boundary."
+      "name": "Skill or plugin",
+      "explanation": "A reusable set of instructions that tells your coding agent how to do a specific job—in this case, explain the build."
     },
     {
-      "term": "Plugin",
-      "aliases": ["Teach plugin"],
-      "plain": "An installable package that can carry one or more skills and the files they need.",
-      "in_build": "The Teach plugin carries the Teach skill, its brand references, scripts, icons, and HTML shell."
+      "name": "JSON",
+      "explanation": "A simple text format Teach uses to keep the lesson's title, three-part story, and visual steps organised."
     },
     {
-      "term": "JSON",
-      "aliases": ["lesson.json", "lesson source"],
-      "plain": "A tidy text format for storing named pieces of information.",
-      "in_build": "Each lesson keeps its title, chapters, diagrams, quiz, and follow-ups in lesson.json."
+      "name": "Python",
+      "explanation": "The small program that checks the lesson data and joins it with Teach's page design."
     },
     {
-      "term": "HTML",
-      "aliases": ["Standalone HTML", "HTML shell", "index.html"],
-      "plain": "A web page format that describes the content and structure the browser should display.",
-      "in_build": "The generated index.html packs the lesson's content, styling, and interactions into one page."
-    },
-    {
-      "term": "Localhost",
-      "aliases": ["127.0.0.1", "loopback address", "local server"],
-      "plain": "A private web address that points back to the same computer.",
-      "in_build": "Teach serves lessons on 127.0.0.1 so the browser can open them without publishing them."
-    },
-    {
-      "term": "CSS",
-      "plain": "The rules that control how a web page looks, including its colors, spacing, and layout.",
-      "in_build": "Teach's CSS gives every lesson the warm paper, blue wires, cards, and responsive layout."
-    },
-    {
-      "term": "JavaScript",
-      "plain": "Instructions that let a web page react when someone clicks, types, or changes something.",
-      "in_build": "Teach uses JavaScript for diagrams, scenarios, glossary tooltips, the quiz, and copying follow-up questions."
-    },
-    {
-      "term": "Python",
-      "plain": "A programming language often used for small tools, automation, and backend work.",
-      "in_build": "Teach uses Python to check lesson.json, combine it with the HTML shell, and run the local server."
-    },
-    {
-      "term": "Frontend",
-      "aliases": ["front-end"],
-      "plain": "The part of a product that runs in front of the user and creates what they see and interact with.",
-      "in_build": "Teach's frontend is the generated HTML page, styled by CSS and made interactive by JavaScript."
-    },
-    {
-      "term": "User interface",
-      "aliases": ["interface", "UI"],
-      "plain": "The visible controls, words, and visuals a person uses to interact with a product.",
-      "in_build": "Teach's interface is the lesson page with diagrams, dotted terms, scenarios, quiz controls, and follow-up questions."
-    },
-    {
-      "term": "Backend",
-      "plain": "The behind-the-scenes part of a product that receives requests, runs rules, and often reads or saves data.",
-      "in_build": "Teach v1 has no separate backend; Codex and the local Python tools create the page before the learner opens it."
-    },
-    {
-      "term": "Function call",
-      "plain": "One part of a program asking a named set of instructions to do a job, often with information supplied as input.",
-      "in_build": "Teach calls its Python build function with lesson.json, and JavaScript calls smaller functions whenever the learner clicks or answers."
-    },
-    {
-      "term": "Codex",
-      "plain": "The builder assistant that can read the current conversation and work with files on the computer.",
-      "in_build": "Codex uses the Teach instructions to turn the active build conversation into a lesson."
-    },
-    {
-      "term": "Context",
-      "aliases": ["conversation context", "build context", "active conversation"],
-      "plain": "The information already available from the conversation and the work around it.",
-      "in_build": "Teach uses the current chat as context so the builder does not need to explain the build again."
-    },
-    {
-      "term": "$teach",
-      "aliases": ["$teach follow-up"],
-      "plain": "The explicit instruction used to run the Teach skill inside a Codex chat.",
-      "in_build": "The lesson copies follow-up questions beginning with $teach so Codex knows to answer and improve the same lesson."
-    },
-    {
-      "term": "Database",
-      "aliases": ["databases"],
-      "plain": "An organized place where a product saves information for later.",
-      "in_build": "Teach v1 does not use a database; the lesson stays as files on the builder's computer."
-    },
-    {
-      "term": "API key",
-      "aliases": ["model key"],
-      "plain": "A private credential that lets software use an online service.",
-      "in_build": "Teach's local lesson does not require an API key because it does not call an AI service from the page."
-    },
-    {
-      "term": "Tracking script",
-      "plain": "Page instructions that record visits or actions for analytics.",
-      "in_build": "Teach v1 has no tracking script; nothing in the lesson reports how it is used."
-    },
-    {
-      "term": "Architecture",
-      "plain": "The plan for which parts a system has and how those parts work together.",
-      "in_build": "Teach explains only the architecture supported by the chat and files instead of inventing missing parts."
+      "name": "HTML",
+      "explanation": "The finished web page file your browser displays locally on your computer."
     }
-  ],
-  "playground": {
-    "title": "Change one condition and watch the teaching loop react",
-    "description": "Pick a situation to see where the work travels and what Teach should do next.",
-    "scenarios": [
-      {
-        "label": "Clear build trail",
-        "tone": "normal",
-        "headline": "The chat contains decisions, changes, and a verified result",
-        "body": "Teach can build a confident lesson because it can connect each explanation to something that actually happened.",
-        "trace": [
-          "Read the conversation",
-          "Choose the key mental model",
-          "Create diagrams and scenarios",
-          "Build the local page"
-        ]
-      },
-      {
-        "label": "Missing decision",
-        "tone": "broken",
-        "headline": "The chat shows what changed but not why",
-        "body": "Teach should mark the missing reason and explain only the observed behavior. A polished guess would teach the wrong lesson.",
-        "trace": [
-          "Find the evidence gap",
-          "State what is known",
-          "Call out what is uncertain",
-          "Suggest the exact follow-up question"
-        ]
-      },
-      {
-        "label": "Builder asks why",
-        "tone": "recovered",
-        "headline": "A fuzzy idea becomes a useful follow-up",
-        "body": "The learner copies a focused prompt to the original chat. The answer is added to the source, and the lesson is rebuilt with a stronger explanation.",
-        "trace": [
-          "Question copied from the page",
-          "Answer grounded in build context",
-          "lesson.json updated",
-          "Same local page refreshed"
-        ]
-      }
-    ]
-  },
-  "quiz": [
-    {
-      "question": "A lesson says a feature uses a database, but the build chat never mentioned one. What should Teach do?",
-      "choices": [
-        "Keep it because most products use databases",
-        "Mark the gap and explain only what the chat proves",
-        "Remove the whole chapter",
-        "Publish the page so someone else can confirm it"
-      ],
-      "answer": 1,
-      "explanation": "Teach is a translator of the build evidence, not a source of invented architecture. It should make uncertainty visible and offer a focused follow-up."
-    },
-    {
-      "question": "Why does each lesson keep a JSON source as well as the finished HTML page?",
-      "choices": [
-        "JSON makes the page available on the internet",
-        "JSON stores passwords more safely",
-        "JSON keeps the teaching content editable without redesigning the page",
-        "JSON replaces the browser"
-      ],
-      "answer": 2,
-      "explanation": "The lesson source is the editable content layer. The same visual shell can render a new or improved lesson from it."
-    },
-    {
-      "question": "A builder types a new question inside the local page. What happens in version one?",
-      "choices": [
-        "The page secretly calls a model API",
-        "The question is sent to GrowthX analytics",
-        "The page copies a grounded prompt for the original Codex chat",
-        "The browser edits the source by itself"
-      ],
-      "answer": 2,
-      "explanation": "V1 keeps the lesson dependency-free and honest. The original chat already has the right context, so the question returns there."
-    },
-    {
-      "question": "Which address best matches the local-only promise?",
-      "choices": [
-        "A public GrowthX lesson URL",
-        "127.0.0.1 on the builder's computer",
-        "A shared cloud storage link",
-        "An analytics dashboard"
-      ],
-      "answer": 1,
-      "explanation": "127.0.0.1 is the loopback address: the computer is serving the page to itself rather than publishing it."
-    }
-  ],
-  "followups": [
-    "Why use a local server instead of double-clicking the HTML file?",
-    "How would a hosted GrowthX version change the privacy model?",
-    "What makes an analogy useful without making it misleading?",
-    "How does Teach decide which technical terms deserve a place in the lesson?"
   ]
 }

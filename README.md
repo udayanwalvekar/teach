@@ -2,11 +2,9 @@
 
 you built it. now understand it.
 
-teach turns the thing you just made in Codex or Claude Code into a private interactive explanation on your own computer. it uses the current chat, so you do not need to explain the project again.
+teach turns the thing you just made in Codex or Claude Code into a short visual explanation on your own computer. it uses the current chat, so you do not need to explain the project again.
 
-it answers two questions first: **what did i build?** and **how does it work?** then it follows one real action through the moving parts with clean, minimal diagrams. it names the actual tech stack—interface, frontend, backend, database, function calls, APIs, state, and hosting when they exist—and explains the job each part performs. every technical word gets a Kindle-style dotted underline: hover, tap, or focus it for a plain-English definition and what it means in this particular build. the same definitions form a complete dictionary at the end.
-
-when something still feels fuzzy, the page helps you copy a better follow-up question back into the same chat. a small quiz checks whether the system makes sense, not whether you memorized vocabulary.
+every lesson answers three questions: **why was this needed?**, **what did i build?**, and **how does it work?** the final part follows one real action from the command you run to the result you see. only the technologies needed to understand that path are included, each in one plain sentence.
 
 ## use it
 
@@ -19,10 +17,10 @@ that is the whole prompt. if you want to steer the lesson, use the complete vers
 
 ```text
 Codex:
-$teach Teach me what I built in this chat. Explain what it does, how it works end to end, and what every technical term means in this specific build. Use clean interactive diagrams and finish with a short scenario quiz.
+$teach Explain why I needed this, what I built, and how it works from start to finish. Keep it short and use plain language.
 
 Claude Code:
-/teach Teach me what I built in this chat. Explain what it does, how it works end to end, and what every technical term means in this specific build. Use clean interactive diagrams and finish with a short scenario quiz.
+/teach Explain why I needed this, what I built, and how it works from start to finish. Keep it short and use plain language.
 ```
 
 teach creates a standalone `index.html` under `~/teach-lessons/` and opens it on a local-only address. there is no account, cloud upload, tracking, or model API inside the page.
@@ -74,9 +72,9 @@ git clone --depth 1 https://github.com/udayanwalvekar/teach.git
 
 ## teaching style
 
-teach looks like a workshop notebook you can touch: warm graph paper, ink-black type, electric-blue wires, and small citron and coral signals.
+teach uses a quiet black-and-white paper style: clear system type, thin rules, familiar controls, and no decorative color competing with the lesson.
 
-every explanation starts with what the builder accomplished, then shows how the real system works from start to finish. ordinary words come before technical terms. honest analogies support the actual components, fields, events, and decisions instead of replacing them. the main visual makes the invisible flow clickable, and every piece of jargon remains one hover or tap away.
+every explanation is written for a curious 18-year-old and should take about three minutes to understand. ordinary words come before technical terms. teach lessons do not include quizzes, playgrounds, scores, or glossary popovers.
 
 ## what v1 does not do
 
