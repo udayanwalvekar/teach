@@ -39,6 +39,7 @@ Use the native system sans-serif stack for everything. Create hierarchy with siz
 The one useful diagram belongs in **How it works**.
 
 - Show three to five steps in one direction.
+- Give every step a small system-area label. Use Frontend, Backend, and Third-party service when those boundaries are real; for single-area work, use that layer's meaningful sub-parts.
 - Use black outlines on white modules.
 - Use a black fill only for the selected step.
 - Keep each label understandable without opening its detail.

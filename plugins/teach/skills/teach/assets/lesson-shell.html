@@ -42,7 +42,8 @@
     }
 
     button:focus-visible,
-    a:focus-visible {
+    a:focus-visible,
+    summary:focus-visible {
       outline: 2px solid var(--ink);
       outline-offset: 3px;
     }
@@ -172,6 +173,27 @@
       margin-right: 12px;
     }
 
+    .learning-goal {
+      max-width: 760px;
+      margin-top: 34px;
+      padding: 20px 0;
+      border-top: 1px solid var(--ink);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .learning-goal strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .learning-goal p {
+      margin: 0;
+      font-size: clamp(1.02rem, 1.4vw, 1.15rem);
+    }
+
     .lesson {
       width: min(1120px, calc(100% - 40px));
       margin: 0 auto;
@@ -251,6 +273,48 @@
       font-weight: 600;
     }
 
+    .worked-example {
+      margin-top: 8px;
+      border-top: 1px solid var(--ink);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .example-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .example-state {
+      padding: 22px 24px 24px 0;
+    }
+
+    .example-state + .example-state {
+      padding-left: 24px;
+      border-left: 1px solid var(--line);
+    }
+
+    .example-state strong,
+    .step-area,
+    .technology-note strong {
+      display: block;
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 650;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .example-state p {
+      margin: 8px 0 0;
+    }
+
+    .example-insight {
+      margin: 0;
+      padding: 18px 0;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+    }
+
     .visual {
       padding: clamp(20px, 4vw, 32px);
       border: 1px solid #cccccc;
@@ -286,7 +350,7 @@
     .flow-step {
       position: relative;
       min-width: 0;
-      min-height: 112px;
+      min-height: 138px;
       display: grid;
       place-items: center;
       align-content: center;
@@ -326,6 +390,12 @@
       border-radius: 50%;
     }
 
+    .step-area {
+      color: inherit;
+      font-size: 0.62rem;
+      line-height: 1.2;
+    }
+
     .step-label {
       font-weight: 650;
       line-height: 1.25;
@@ -349,37 +419,55 @@
       color: var(--muted);
     }
 
-    .technologies {
+    .technology-note {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .technology-note strong {
+      margin-bottom: 5px;
+      color: var(--ink);
+    }
+
+    .learning-check {
       width: min(1060px, calc(100% - 40px));
       margin: 0 auto;
       padding: clamp(64px, 8vw, 96px) 0;
       border-top: 1px solid var(--line);
     }
 
-    .technology-list {
-      display: grid;
-      border-top: 1px solid var(--ink);
+    .learning-check h2 {
+      max-width: 850px;
+      font-size: clamp(1.8rem, 3.2vw, 2.8rem);
     }
 
-    .technology-row {
-      display: grid;
-      grid-template-columns: minmax(150px, 0.32fr) minmax(0, 1fr);
-      gap: 24px;
-      padding: 20px 0;
+    .check-instruction {
+      color: var(--muted);
+    }
+
+    .learning-check details {
+      margin-top: 26px;
+      border-top: 1px solid var(--ink);
       border-bottom: 1px solid var(--line);
     }
 
-    .technology-row h3,
-    .technology-row p {
-      margin: 0;
-    }
-
-    .technology-row h3 {
-      font-size: 1.05rem;
+    .learning-check summary {
+      padding: 18px 2px;
       font-weight: 600;
+      cursor: pointer;
     }
 
-    .technology-row p {
+    .check-answer {
+      max-width: 780px;
+      padding: 0 0 22px;
+    }
+
+    .check-answer p {
+      margin-bottom: 10px;
+    }
+
+    .check-why {
       color: var(--muted);
     }
 
@@ -467,6 +555,20 @@
         grid-template-columns: 1fr;
       }
 
+      .example-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .example-state {
+        padding-right: 0;
+      }
+
+      .example-state + .example-state {
+        padding-left: 0;
+        border-top: 1px solid var(--line);
+        border-left: 0;
+      }
+
       .flow-step:not(:last-child)::after {
         top: calc(100% + 1px);
         left: 50%;
@@ -475,12 +577,7 @@
         transform: translateX(-50%);
       }
 
-      .technology-row {
-        grid-template-columns: 1fr;
-        gap: 6px;
-      }
-
-      .technologies {
+      .learning-check {
         width: min(100% - 36px, 1060px);
       }
     }
@@ -500,7 +597,7 @@
     <div class="subject" id="subject"></div>
   </header>
   <main id="app"></main>
-  <footer>Made locally with Teach. Nothing on this page is sent anywhere.</footer>
+  <footer>Teach generates and stores the finished lesson locally. It does not publish or host the page.</footer>
 
   <script>
     "use strict";
@@ -528,14 +625,19 @@
       append(
         meta,
         make("span", "", LESSON.meta.minutes + " minute read"),
-        make("span", "", "3 clear parts")
+        make("span", "", "3 connected parts")
       );
       append(
         hero,
-        make("div", "eyebrow", "Your build, explained"),
+        make("div", "eyebrow", "Learning module"),
         make("h1", "", LESSON.meta.title),
         make("p", "hero-deck", LESSON.meta.one_liner),
-        meta
+        meta,
+        append(
+          make("div", "learning-goal"),
+          make("strong", "", "What you will learn"),
+          make("p", "", LESSON.meta.learning_goal)
+        )
       );
       return hero;
     }
@@ -546,10 +648,17 @@
         control.classList.toggle("active", active);
         control.setAttribute("aria-pressed", active ? "true" : "false");
       });
-      detail.replaceChildren(
-        make("h4", "", item.label),
-        make("p", "", item.detail)
-      );
+      const content = [make("h4", "", item.label), make("p", "", item.detail)];
+      if (item.technology) {
+        content.push(
+          append(
+            make("p", "technology-note"),
+            make("strong", "", item.technology.name),
+            document.createTextNode(item.technology.explanation)
+          )
+        );
+      }
+      detail.replaceChildren.apply(detail, content);
     }
 
     function renderFlow(visual) {
@@ -574,6 +683,7 @@
         control.type = "button";
         append(
           control,
+          make("span", "step-area", item.area_name),
           make("span", "step-number", index + 1),
           make("span", "step-label", item.label)
         );
@@ -590,6 +700,27 @@
       return card;
     }
 
+    function renderExample(example) {
+      if (!example) return null;
+      const block = make("div", "worked-example");
+      const grid = make("div", "example-grid");
+      append(
+        grid,
+        append(
+          make("div", "example-state"),
+          make("strong", "", "Before"),
+          make("p", "", example.before)
+        ),
+        append(
+          make("div", "example-state"),
+          make("strong", "", "After"),
+          make("p", "", example.after)
+        )
+      );
+      append(block, grid, make("p", "example-insight", example.insight));
+      return block;
+    }
+
     function renderLesson() {
       const shell = make("div", "lesson");
       shell.id = "lesson";
@@ -598,7 +729,7 @@
       append(nav, make("div", "nav-label", "Your path"));
       const navItems = make("div", "nav-items");
       const chapters = make("div", "chapters");
-      const navLabels = ["The problem", "What you built", "How it works"];
+      const navLabels = ["Why it exists", "What changed", "How it works"];
       const navButtons = [];
 
       LESSON.story.forEach(function (chapter, index) {
@@ -627,6 +758,7 @@
           make("div", "kicker", chapter.kicker),
           make("h2", "", chapter.title),
           make("p", "chapter-copy", chapter.plain),
+          renderExample(chapter.example),
           chapter.visual ? renderFlow(chapter.visual) : null,
           make("div", "takeaway", chapter.takeaway)
         );
@@ -656,22 +788,25 @@
       return shell;
     }
 
-    function renderTechnologies() {
-      const items = LESSON.technologies || [];
-      if (!items.length) return null;
-      const section = make("section", "technologies");
+    function renderCheck() {
+      const section = make("section", "learning-check");
       append(
         section,
-        make("div", "kicker", "Tools used"),
-        make("h2", "", "The few technologies that matter")
+        make("div", "kicker", "Check your understanding"),
+        make("h2", "", LESSON.check.question),
+        make("p", "check-instruction", "Pause and answer in your own words before revealing the explanation.")
       );
-      const list = make("div", "technology-list");
-      items.forEach(function (item) {
-        const row = make("article", "technology-row");
-        append(row, make("h3", "", item.name), make("p", "", item.explanation));
-        list.appendChild(row);
-      });
-      section.appendChild(list);
+      const disclosure = make("details", "");
+      append(
+        disclosure,
+        make("summary", "", "Reveal the answer"),
+        append(
+          make("div", "check-answer"),
+          make("p", "", LESSON.check.answer),
+          make("p", "check-why", LESSON.check.why)
+        )
+      );
+      section.appendChild(disclosure);
       return section;
     }
 
@@ -688,7 +823,7 @@
         document.getElementById("app"),
         renderHero(),
         renderLesson(),
-        renderTechnologies()
+        renderCheck()
       );
       updateProgress();
       window.addEventListener("scroll", updateProgress, { passive: true });

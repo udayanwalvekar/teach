@@ -1,0 +1,173 @@
+{
+  "meta": {
+    "subject": "Teach",
+    "summary": "Teach uses separate investigation and learning-design agents to turn a finished build into an evidence-backed local learning module."
+  },
+  "scope": {
+    "mode": "cross-cutting",
+    "areas": [
+      {
+        "id": "orchestrator",
+        "name": "Teach orchestrator",
+        "role": "Starts the two agents and passes only validated data between them.",
+        "components": ["Teach skill", "Output folder"]
+      },
+      {
+        "id": "investigator",
+        "name": "Build Investigator",
+        "role": "Reads the conversation and code to establish what is true and relevant.",
+        "components": ["Conversation review", "Code inspection", "Build map"]
+      },
+      {
+        "id": "designer",
+        "name": "Learning Designer",
+        "role": "Turns the validated facts into a lesson an 18-year-old can understand.",
+        "components": ["Learning goal", "Worked example", "System diagram", "Recall check"]
+      },
+      {
+        "id": "local-output",
+        "name": "Local output",
+        "role": "Validates the lesson and opens the finished page on the builder's computer.",
+        "components": ["Python validator", "HTML page", "Local web server"]
+      }
+    ]
+  },
+  "problem": {
+    "summary": "One prompt was responsible for both understanding unfamiliar code and teaching it, which encouraged a polished summary without a deep, evidence-backed mental model.",
+    "evidence_ids": ["e1"]
+  },
+  "build": {
+    "summary": "Teach now separates factual investigation from learning design and validates the evidence handoff before rendering the module.",
+    "evidence_ids": ["e2", "e3", "e4"]
+  },
+  "system_flow": [
+    {
+      "id": "invoke",
+      "label": "Run Teach",
+      "detail": "The Teach skill creates one output folder and starts the evidence-first workflow.",
+      "area_id": "orchestrator",
+      "evidence_ids": ["e2"]
+    },
+    {
+      "id": "investigate",
+      "label": "Map the build",
+      "detail": "A fresh agent follows the conversation and code, keeps relevant technologies, and records evidence and uncertainties.",
+      "area_id": "investigator",
+      "evidence_ids": ["e3", "e4"]
+    },
+    {
+      "id": "design",
+      "label": "Design the lesson",
+      "detail": "A different agent receives the validated map and chooses the learning goal, real example, simple diagram, and recall question.",
+      "area_id": "designer",
+      "evidence_ids": ["e5", "e6"]
+    },
+    {
+      "id": "render",
+      "label": "Check and render",
+      "detail": "Python rejects unsupported claims or malformed lesson data, then embeds the approved lesson into one HTML file.",
+      "area_id": "local-output",
+      "evidence_ids": ["e7", "e8"]
+    },
+    {
+      "id": "open",
+      "label": "Open locally",
+      "detail": "A local-only server lets the builder read the finished module in a browser without publishing the page.",
+      "area_id": "local-output",
+      "evidence_ids": ["e9"]
+    }
+  ],
+  "technologies": [
+    {
+      "name": "JSON",
+      "job": "Carries the evidence map and lesson between the two agents and the renderer.",
+      "relevance": "The learner needs to see that facts are handed over in a checked structure instead of hidden in another free-form prompt.",
+      "evidence_ids": ["e4", "e7"]
+    },
+    {
+      "name": "Python",
+      "job": "Validates both JSON files and builds the final page.",
+      "relevance": "It is the deterministic gate between agent-written data and the page the learner sees.",
+      "evidence_ids": ["e7", "e8"]
+    },
+    {
+      "name": "HTML",
+      "job": "Stores the complete interactive learning module that opens in the browser.",
+      "relevance": "It explains what the final artifact is and why it can remain local.",
+      "evidence_ids": ["e8", "e9"]
+    }
+  ],
+  "important_decisions": [
+    {
+      "summary": "The Learning Designer does not receive the full repository or conversation, preventing it from silently changing the investigator's facts.",
+      "evidence_ids": ["e2", "e5"]
+    },
+    {
+      "summary": "Relevant technology explanations moved into the system step where each tool performs work.",
+      "evidence_ids": ["e6", "e7"]
+    }
+  ],
+  "discarded_details": [
+    {
+      "detail": "Decorative page styling and incidental implementation libraries",
+      "reason": "They do not change the learner's picture of how Teach turns evidence into a local module."
+    }
+  ],
+  "uncertainties": [],
+  "evidence": [
+    {
+      "id": "e1",
+      "kind": "conversation",
+      "source": "Builder feedback: separate code understanding from learning-module creation",
+      "supports": "The previous combined prompt explained the product but did not create a deep learning module."
+    },
+    {
+      "id": "e2",
+      "kind": "code",
+      "source": "plugins/teach/skills/teach/SKILL.md:Run the two-agent pipeline",
+      "supports": "Teach orchestrates two isolated agents and validates the handoff between them."
+    },
+    {
+      "id": "e3",
+      "kind": "documentation",
+      "source": "plugins/teach/skills/teach/references/build-investigator.md",
+      "supports": "The first agent inspects conversation, code, system boundaries, technologies, and relevance."
+    },
+    {
+      "id": "e4",
+      "kind": "code",
+      "source": "plugins/teach/skills/teach/scripts/validate_build_map.py:validate_build_map",
+      "supports": "The evidence handoff has deterministic structure, area, flow, and evidence checks."
+    },
+    {
+      "id": "e5",
+      "kind": "documentation",
+      "source": "plugins/teach/skills/teach/references/learning-designer.md",
+      "supports": "The second agent receives the validated map and designs the learning experience without reopening the code."
+    },
+    {
+      "id": "e6",
+      "kind": "documentation",
+      "source": "plugins/teach/skills/teach/references/lesson-format.md",
+      "supports": "The module contains a learning goal, worked example, area-labelled flow, embedded technology explanations, and recall check."
+    },
+    {
+      "id": "e7",
+      "kind": "code",
+      "source": "plugins/teach/skills/teach/scripts/build_lesson.py:validate_lesson",
+      "supports": "Lesson evidence, system areas, and technology names are checked against the build map."
+    },
+    {
+      "id": "e8",
+      "kind": "code",
+      "source": "plugins/teach/skills/teach/scripts/build_lesson.py:main",
+      "supports": "The builder embeds validated lesson JSON into the standalone HTML shell."
+    },
+    {
+      "id": "e9",
+      "kind": "code",
+      "source": "plugins/teach/skills/teach/scripts/serve_lesson.py",
+      "supports": "The generated module is served on a local address for the browser."
+    }
+  ]
+}

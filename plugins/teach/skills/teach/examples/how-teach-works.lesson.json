@@ -1,72 +1,104 @@
 {
   "meta": {
     "slug": "how-teach-works",
-    "title": "How Teach turns your build into a lesson",
+    "title": "How Teach turns code into a learning module",
     "subject": "Teach",
-    "one_liner": "Run Teach after building something. It reads the work already in your chat and opens a short visual explanation in your browser.",
-    "minutes": 3
+    "one_liner": "Two separate agents turn a finished build into one evidence-backed lesson on your computer.",
+    "learning_goal": "By the end, you can explain what Teach investigates, what passes between its two agents, and how that becomes a local page.",
+    "minutes": 4
   },
   "story": [
     {
       "id": "problem",
-      "kicker": "01 · the problem",
-      "title": "A finished build can still be hard to explain",
-      "plain": "The useful thinking is scattered across messages, decisions, mistakes, and fixes. By the end, the thing works, but the builder may not have one simple picture of what they made or why it works.",
-      "takeaway": "Teach turns the trail of building into a mental model you can remember."
+      "kicker": "01 · why it exists",
+      "title": "Working code is not the same as understanding it",
+      "plain": "A build conversation mixes the real system with abandoned ideas, small fixes, and implementation noise. When one prompt tries to inspect all of that and teach it at the same time, it can produce a smooth explanation without a trustworthy mental model.",
+      "takeaway": "Teach first separates confirmed facts from the noise around them.",
+      "evidence_ids": ["e1", "e3"]
     },
     {
       "id": "built",
-      "kicker": "02 · what you built",
-      "title": "A saved teaching prompt for your coding agent",
-      "plain": "Teach is installed as a skill or plugin. When you run it in the same conversation, it asks the coding agent to find the important story in that work and turn it into a short visual lesson.",
-      "takeaway": "You do not explain the project again because Teach starts with the context already in the chat."
+      "kicker": "02 · what changed",
+      "title": "Investigation and teaching are now separate jobs",
+      "plain": "The Build Investigator establishes what the code does and removes irrelevant detail. The Learning Designer receives that checked map and decides what an 18-year-old should learn, which example will help, and how to diagram the system.",
+      "takeaway": "The lesson is designed from verified evidence instead of generated directly from a messy conversation.",
+      "evidence_ids": ["e2", "e3", "e5"],
+      "example": {
+        "before": "One agent reads the build and immediately writes a polished product explanation.",
+        "after": "One agent produces an evidence map; a different agent turns that map into a learning goal, worked example, system diagram, and recall check.",
+        "insight": "Separating truth-finding from teaching makes both jobs easier to inspect and improve.",
+        "evidence_ids": ["e1", "e2", "e5", "e6"]
+      }
     },
     {
       "id": "works",
       "kicker": "03 · how it works",
-      "title": "One command becomes one local page",
-      "plain": "Teach follows a short path from your active conversation to a page in your browser. It checks project files only when the chat leaves an important gap.",
-      "takeaway": "The finished page stays on your computer; Teach does not upload it to Google or another hosted service.",
+      "title": "Evidence moves through five clear steps",
+      "plain": "Each step has one owner. The labels show whether the work happens in the Teach orchestrator, the investigator, the learning designer, or the local output tools.",
+      "takeaway": "Teach generates and stores the finished lesson locally. It does not publish or host the page.",
+      "evidence_ids": ["e2", "e7", "e8", "e9"],
       "visual": {
         "type": "flow",
-        "title": "What happens after you run Teach",
+        "title": "From finished build to learning module",
         "steps": [
           {
             "label": "Run Teach",
-            "detail": "Typing $teach in Codex or /teach in Claude Code starts the saved teaching instructions in the same conversation."
+            "detail": "The Teach orchestrator creates one output folder and starts the evidence-first workflow.",
+            "area_id": "orchestrator",
+            "area_name": "Teach orchestrator",
+            "evidence_ids": ["e2"]
           },
           {
-            "label": "Read the build trail",
-            "detail": "The coding agent reads the conversation and checks only the files needed to confirm what happened."
+            "label": "Map the build",
+            "detail": "The Build Investigator follows the conversation and code, identifies the real system areas, and removes technologies that do not matter to the lesson.",
+            "area_id": "investigator",
+            "area_name": "Build Investigator",
+            "evidence_ids": ["e3", "e4"],
+            "technology": {
+              "name": "JSON",
+              "explanation": "JSON is the structured text file that carries confirmed facts and their evidence to the next agent.",
+              "evidence_ids": ["e4"]
+            }
           },
           {
-            "label": "Find three answers",
-            "detail": "It distills the work into the problem, what you built, and how the result works from start to finish."
+            "label": "Design the lesson",
+            "detail": "The Learning Designer sees the validated map—not the noisy source material—and chooses what the learner should understand and remember.",
+            "area_id": "designer",
+            "area_name": "Learning Designer",
+            "evidence_ids": ["e5", "e6"]
           },
           {
-            "label": "Open the lesson",
-            "detail": "A small Python script combines that explanation with the Teach page and opens the local HTML in your browser."
+            "label": "Check and render",
+            "detail": "A deterministic script rejects unsupported evidence, incorrect system labels, or malformed lesson data before building the page.",
+            "area_id": "local-output",
+            "area_name": "Local output",
+            "evidence_ids": ["e7", "e8"],
+            "technology": {
+              "name": "Python",
+              "explanation": "Python performs the repeatable checks and places the approved lesson inside the page design.",
+              "evidence_ids": ["e7", "e8"]
+            }
+          },
+          {
+            "label": "Open locally",
+            "detail": "The browser displays the completed module from a local-only server on the builder's computer.",
+            "area_id": "local-output",
+            "area_name": "Local output",
+            "evidence_ids": ["e8", "e9"],
+            "technology": {
+              "name": "HTML",
+              "explanation": "HTML is the finished page file that holds the explanation, diagram, and interaction the browser displays.",
+              "evidence_ids": ["e8", "e9"]
+            }
           }
         ]
       }
     }
   ],
-  "technologies": [
-    {
-      "name": "Skill or plugin",
-      "explanation": "A reusable set of instructions that tells your coding agent how to do a specific job—in this case, explain the build."
-    },
-    {
-      "name": "JSON",
-      "explanation": "A simple text format Teach uses to keep the lesson's title, three-part story, and visual steps organised."
-    },
-    {
-      "name": "Python",
-      "explanation": "The small program that checks the lesson data and joins it with Teach's page design."
-    },
-    {
-      "name": "HTML",
-      "explanation": "The finished web page file your browser displays locally on your computer."
-    }
-  ]
+  "check": {
+    "question": "Why does the Learning Designer receive a build map instead of reading the entire codebase and conversation again?",
+    "answer": "The build map gives it the confirmed facts, relevant technologies, system boundaries, and evidence without mixing teaching decisions back into code investigation.",
+    "why": "That separation is the core reason Teach can be both accurate and useful for learning.",
+    "evidence_ids": ["e2", "e4", "e5"]
+  }
 }

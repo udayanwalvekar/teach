@@ -1,6 +1,6 @@
 # Lesson format
 
-Create a UTF-8 JSON file with these top-level keys.
+The Learning Designer writes one UTF-8 JSON object. Every `evidence_ids` array refers to evidence declared in the validated build map.
 
 ## `meta`
 
@@ -8,38 +8,62 @@ Required fields:
 
 - `slug`: lowercase words separated by hyphens
 - `title`: what the learner will understand
-- `subject`: short label for the thing they built
+- `subject`: short label for the build
 - `one_liner`: the outcome in plain English
-- `minutes`: estimated reading and interaction time
+- `learning_goal`: what the learner will be able to explain
+- `minutes`: integer from 1 to 10
 
 ## `story`
 
-Use exactly 3 chapters, in this order:
+Use exactly three chapters in this order: `problem`, `built`, `works`.
 
-1. `problem`: why the work started and what was hard before
-2. `built`: what now exists and what it lets the person do
-3. `works`: the shortest accurate end-to-end explanation
+Every chapter contains `id`, `kicker`, `title`, `plain`, `takeaway`, and one or more `evidence_ids`.
 
-Each chapter has:
+### `problem`
 
-- `id`, `kicker`, `title`, `plain`, and `takeaway`
-- `problem` and `built` stay text-only.
-- `works` has one `visual` with `type: "flow"` and 3 to 5 `steps`.
+Text only. Explain why the work started.
 
-Each flow step has:
+### `built`
 
-- `label`: the action in a few words
-- `detail`: one short explanation of what happens
+Add one `example` object:
 
-The visual may include a short `title`. It must trace the complete path from trigger to visible result.
+```json
+{
+  "before": "The confirmed state before",
+  "after": "The confirmed state after",
+  "insight": "What changed in the learner's mental model",
+  "evidence_ids": ["e1", "e2"]
+}
+```
 
-## `technologies`
+Do not invent counts or outcomes to make the example feel concrete.
 
-Optional array of 0 to 6 tools that genuinely help explain the build. Each item has:
+### `works`
 
-- `name`: the real technology or product name
-- `explanation`: one sentence, written for an 18-year-old, covering what it is and the job it performs here
+Add one `visual` with `type: "flow"`, a short `title`, and three to five `steps`.
 
-Do not add a tool merely because it appears in a file. Include only tools a learner needs to understand the three-part story.
+Each step contains:
 
-Teach lessons do not include quizzes, playgrounds, inline glossary tooltips, or dictionary sections. The build script validates this shape and embeds it into a standalone page. Preserve the JSON as the editable source of truth for later revisions.
+- `label`: one short action
+- `detail`: one plain-language explanation
+- `area_id`: an area ID from the build map
+- `area_name`: the exact learner-facing area name from the build map
+- `evidence_ids`: evidence for the step
+- optional `technology`: an object with `name`, a one-sentence `explanation`, and `evidence_ids`
+
+Technology names must come from the build map. Its evidence IDs must belong to that technology in the build map and must also support the flow step where it appears. There is no top-level technologies section.
+
+## `check`
+
+Add one unscored recall object after the story:
+
+```json
+{
+  "question": "One question the learner can answer in their own words",
+  "answer": "A short factual answer",
+  "why": "Why this idea matters",
+  "evidence_ids": ["e3"]
+}
+```
+
+Do not add multiple choice, points, grades, quiz language, a playground, glossary tooltips, or a dictionary section. The build script validates the lesson against the build map and preserves both JSON files beside the generated page.

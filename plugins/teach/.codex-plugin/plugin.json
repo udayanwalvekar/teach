@@ -1,7 +1,7 @@
 {
   "name": "teach",
-  "version": "0.3.0",
-  "description": "Understand the problem, what you built, and how it works.",
+  "version": "0.4.0",
+  "description": "Turn verified build evidence into a learning module you can remember.",
   "author": {
     "name": "Udayan Walvekar",
     "url": "https://github.com/udayanwalvekar"
@@ -13,8 +13,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Teach",
-    "shortDescription": "Learn what you just built.",
-    "longDescription": "Teach turns the current build conversation into a short, private lesson: the problem, what you built, and one clear flow showing how it works.",
+    "shortDescription": "Learn what you built from verified evidence.",
+    "longDescription": "Teach separates code investigation from learning design, then creates a local module with one real example, a simple system diagram, and an unscored recall check.",
     "developerName": "Udayan Walvekar",
     "category": "Education",
     "capabilities": [],
@@ -22,6 +22,6 @@
     "brandColor": "#222222",
     "composerIcon": "./skills/teach/assets/teach-mark.svg",
     "logo": "./skills/teach/assets/teach-logo.svg",
-    "defaultPrompt": "Explain the problem, what I built, and how it works in a short visual local page."
+    "defaultPrompt": "Investigate this build first, then have a separate agent teach it to me like I am 18 with one real example and a simple system diagram."
   }
 }
