@@ -230,7 +230,11 @@ function Test-TeachInteractiveTerminal {
     return $false
   }
   try {
-    return -not [Console]::IsOutputRedirected
+    if ([Console]::IsOutputRedirected) {
+      return $false
+    }
+    $VirtualTerminalProperty = $Host.UI.PSObject.Properties["SupportsVirtualTerminal"]
+    return $null -ne $VirtualTerminalProperty -and [bool]$Host.UI.SupportsVirtualTerminal
   }
   catch {
     return $false

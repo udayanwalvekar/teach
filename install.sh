@@ -12,6 +12,21 @@ worker_process=false
 tui_rendered=false
 tui_line_count=11
 
+clear_tui() {
+  if [ "$tui_rendered" != true ]; then
+    return
+  fi
+
+  printf '\033[%sA' "$tui_line_count"
+  line_number=1
+  while [ "$line_number" -le "$tui_line_count" ]; do
+    printf '\033[2K\n'
+    line_number=$((line_number + 1))
+  done
+  printf '\033[%sA' "$tui_line_count"
+  tui_rendered=false
+}
+
 cleanup() {
   status=$?
   set +e
@@ -23,6 +38,7 @@ cleanup() {
     wait "$install_pid" 2>/dev/null
   fi
   if [ "$cursor_hidden" = true ]; then
+    clear_tui
     printf '\033[?25h'
   fi
   rm -rf "$download_root"
@@ -313,15 +329,7 @@ if [ "$tui_enabled" = true ]; then
   install_pid=""
 
   if [ "$install_status" -ne 0 ]; then
-    if [ "$tui_rendered" = true ]; then
-      printf '\033[%sA' "$tui_line_count"
-      line_number=1
-      while [ "$line_number" -le "$tui_line_count" ]; do
-        printf '\033[2K\n'
-        line_number=$((line_number + 1))
-      done
-      printf '\033[%sA' "$tui_line_count"
-    fi
+    clear_tui
     printf '\033[?25h'
     cursor_hidden=false
     printf '\n  Teach could not be installed.\n\n' >&2
