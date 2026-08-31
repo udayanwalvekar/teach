@@ -74,6 +74,20 @@ test "$backup_count" -eq 1
 tui_home="$test_root/tui-home"
 tui_state="$test_root/tui-state"
 mkdir -p "$tui_home" "$tui_state"
+tui_first_output=$(
+  HOME="$tui_home" \
+  PATH="$repo/tests/fixtures:$PATH" \
+  TEACH_TEST_CODEX_STATE="$tui_state" \
+  TEACH_TEST_CURL_LOG="$curl_log" \
+  TEACH_TEST_REPO="$repo" \
+  TEACH_INSTALL_CODEX=1 \
+  TEACH_INSTALL_CLAUDE=1 \
+  TEACH_FORCE_TUI=1 \
+  TEACH_TEST_PHASE_DELAY=0.08 \
+  TEACH_SPINNER_INTERVAL=0.02 \
+  TERM=xterm-256color \
+  sh "$repo/install.sh"
+)
 tui_output=$(
   HOME="$tui_home" \
   PATH="$repo/tests/fixtures:$PATH" \
@@ -88,6 +102,7 @@ tui_output=$(
   TERM=xterm-256color \
   sh "$repo/install.sh"
 )
+printf '%s' "$tui_first_output" | grep -F '✓ Teach installed' >/dev/null
 printf '%s' "$tui_output" | grep -F 'Detecting coding agents' >/dev/null
 printf '%s' "$tui_output" | grep -F 'Installing for Codex' >/dev/null
 printf '%s' "$tui_output" | grep -F 'Installing for Claude Code' >/dev/null
@@ -98,6 +113,8 @@ printf '%s' "$tui_output" | grep -F 'Restart your coding agent, then type:' >/de
 escape=$(printf '\033')
 printf '%s' "$tui_output" | grep -F "${escape}[?25l" >/dev/null
 printf '%s' "$tui_output" | grep -F "${escape}[?25h" >/dev/null
+tui_backup_count=$(find "$tui_home/.claude/skills" -maxdepth 1 -type d -name 'teach.backup-*' | wc -l | tr -d ' ')
+test "$tui_backup_count" -eq 1
 if printf '%s' "$tui_output" | grep -E 'TEACH IS READY|you built it|[┌┐└┘╭╮╰╯]|Backed up|\.backup-' >/dev/null; then
   echo "Interactive installer still contains the old box, tagline, or internal backup path." >&2
   exit 1
