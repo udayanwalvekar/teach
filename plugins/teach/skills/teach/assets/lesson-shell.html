@@ -3,26 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233155e7'/%3E%3Cpath d='M14 40C24 17 38 49 50 21' fill='none' stroke='%23f5ff76' stroke-width='7' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23222222'/%3E%3Cpath d='M17 18h30M32 18v30' stroke='white' stroke-width='7' stroke-linecap='round'/%3E%3C/svg%3E">
   <meta name="color-scheme" content="light">
-  <meta name="theme-color" content="#F7F1E3">
+  <meta name="theme-color" content="#FFFFFF">
   <title>Teach lesson</title>
   <style>
     :root {
-      --paper: #F7F1E3;
-      --paper-light: #FFFDF7;
-      --ink: #17202A;
-      --ink-soft: #5C6470;
-      --wire: #3155E7;
-      --wire-soft: #DDE4FF;
-      --citron: #D9F95F;
-      --coral: #FF7968;
-      --teal: #2DAA8A;
-      --line: rgba(23, 32, 42, 0.18);
-      --shadow: 5px 6px 0 rgba(23, 32, 42, 0.13);
-      --serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
-      --sans: "Avenir Next", "Segoe UI", sans-serif;
-      --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      --paper: #ffffff;
+      --ink: #222222;
+      --muted: #6a6a6a;
+      --line: #dddddd;
+      --quiet: #f7f7f7;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
     }
 
     * {
@@ -36,49 +28,34 @@
     body {
       margin: 0;
       color: var(--ink);
-      background-color: var(--paper);
-      background-image:
-        linear-gradient(rgba(49, 85, 231, 0.055) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(49, 85, 231, 0.055) 1px, transparent 1px);
-      background-size: 24px 24px;
+      background: var(--paper);
       font-family: var(--sans);
-      font-size: 17px;
-      line-height: 1.6;
+      font-size: 16px;
+      line-height: 1.55;
       -webkit-font-smoothing: antialiased;
-    }
-
-    button,
-    textarea {
-      font: inherit;
     }
 
     button {
       color: inherit;
-    }
-
-    button,
-    [role="button"] {
+      font: inherit;
       cursor: pointer;
     }
 
     button:focus-visible,
-    textarea:focus-visible,
     a:focus-visible {
-      outline: 4px solid var(--citron);
+      outline: 2px solid var(--ink);
       outline-offset: 3px;
     }
 
     .skip-link {
       position: fixed;
       z-index: 100;
-      top: 12px;
-      left: 12px;
-      padding: 9px 14px;
-      color: var(--paper-light);
+      top: 10px;
+      left: 10px;
+      padding: 8px 12px;
+      color: var(--paper);
       background: var(--ink);
-      border-radius: 8px;
       transform: translateY(-160%);
-      transition: transform 180ms ease;
     }
 
     .skip-link:focus {
@@ -87,146 +64,67 @@
 
     .progress-track {
       position: fixed;
-      z-index: 50;
+      z-index: 60;
       top: 0;
       left: 0;
       width: 100%;
-      height: 5px;
-      background: rgba(23, 32, 42, 0.12);
+      height: 2px;
+      background: #eeeeee;
     }
 
     .progress-fill {
       width: 0;
       height: 100%;
-      background: var(--wire);
-      transition: width 120ms linear;
+      background: var(--ink);
     }
 
     .topbar {
       position: sticky;
-      z-index: 40;
-      top: 5px;
+      z-index: 50;
+      top: 2px;
+      min-height: 62px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      min-height: 64px;
       padding: 10px clamp(18px, 4vw, 56px);
-      background: rgba(247, 241, 227, 0.91);
-      border-bottom: 1px solid var(--line);
-      backdrop-filter: blur(14px);
+      background: rgba(255, 255, 255, 0.96);
+      border-bottom: 1px solid #e6e6e6;
+      backdrop-filter: blur(12px);
     }
 
     .wordmark {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 750;
-      letter-spacing: -0.04em;
+      font-size: 1.05rem;
+      font-weight: 650;
+      letter-spacing: -0.02em;
     }
 
-    .mark {
-      position: relative;
-      width: 34px;
-      height: 34px;
-      background: var(--paper-light);
-      border: 2px solid var(--ink);
-      border-radius: 9px;
-      box-shadow: 3px 3px 0 var(--wire);
-    }
-
-    .mark::before,
-    .mark::after {
-      position: absolute;
-      content: "";
-      width: 7px;
-      height: 7px;
-      top: 11px;
-      border: 2px solid var(--ink);
-      border-radius: 50%;
-    }
-
-    .mark::before {
-      left: 4px;
-      background: var(--citron);
-    }
-
-    .mark::after {
-      right: 4px;
-      background: var(--coral);
-    }
-
-    .mark-wire {
-      position: absolute;
-      top: 15px;
-      left: 11px;
-      width: 11px;
-      height: 3px;
-      background: var(--wire);
-    }
-
-    .subject-pill,
-    .eyebrow,
-    .chapter-kicker,
-    .visual-label {
-      font-family: var(--mono);
+    .subject {
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      letter-spacing: 0.09em;
-      font-size: 0.71rem;
-      font-weight: 750;
-    }
-
-    .subject-pill {
-      max-width: 48vw;
-      padding: 6px 10px;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      background: var(--paper-light);
-      border: 1px solid var(--ink);
-      border-radius: 999px;
-    }
-
-    main {
-      overflow: clip;
     }
 
     .hero {
-      position: relative;
-      min-height: calc(100vh - 69px);
-      display: grid;
-      align-items: center;
-      padding: clamp(72px, 10vw, 132px) clamp(20px, 6vw, 90px);
+      width: min(1060px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: clamp(72px, 9vw, 108px) 0 clamp(64px, 8vw, 92px);
     }
 
-    .hero-inner {
-      width: min(1180px, 100%);
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: minmax(0, 1.08fr) minmax(360px, 0.92fr);
-      gap: clamp(44px, 7vw, 100px);
-      align-items: center;
+    .eyebrow,
+    .kicker,
+    .nav-label,
+    .visual-label {
+      color: var(--muted);
+      font-size: 0.71rem;
+      font-weight: 650;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
     .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      margin-bottom: 18px;
-      padding: 7px 11px;
-      background: var(--citron);
-      border: 2px solid var(--ink);
-      border-radius: 5px;
-      box-shadow: 3px 3px 0 var(--ink);
-      transform: rotate(-1.5deg);
-    }
-
-    .eyebrow::before {
-      width: 8px;
-      height: 8px;
-      content: "";
-      background: var(--wire);
-      border: 1px solid var(--ink);
-      border-radius: 50%;
+      margin-bottom: 22px;
     }
 
     h1,
@@ -238,469 +136,207 @@
 
     h1,
     h2 {
-      font-family: var(--serif);
+      margin-bottom: 20px;
       font-weight: 600;
       letter-spacing: -0.045em;
     }
 
     h1 {
-      max-width: 780px;
-      margin-bottom: 22px;
-      font-size: clamp(3.2rem, 7.4vw, 7.3rem);
-      line-height: 0.92;
+      max-width: 820px;
+      font-size: clamp(3rem, 5.4vw, 5rem);
+      line-height: 1.02;
     }
 
     h2 {
-      max-width: 850px;
-      margin-bottom: 20px;
-      font-size: clamp(2.35rem, 5vw, 4.8rem);
-      line-height: 1;
-    }
-
-    h3 {
-      line-height: 1.2;
-      letter-spacing: -0.025em;
+      max-width: 760px;
+      font-size: clamp(2.15rem, 4vw, 3.6rem);
+      line-height: 1.05;
     }
 
     .hero-deck {
-      max-width: 680px;
-      margin-bottom: 28px;
-      color: var(--ink-soft);
-      font-size: clamp(1.12rem, 1.8vw, 1.38rem);
-      line-height: 1.55;
-    }
-
-    .builder-win {
-      max-width: 670px;
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 13px;
-      align-items: start;
-      padding: 16px 18px;
-      background: var(--paper-light);
-      border: 2px solid var(--ink);
-      border-radius: 10px;
-      box-shadow: var(--shadow);
-    }
-
-    .builder-win strong {
-      display: block;
-      margin-bottom: 2px;
-    }
-
-    .win-badge {
-      display: grid;
-      place-items: center;
-      width: 34px;
-      height: 34px;
-      background: var(--citron);
-      border: 2px solid var(--ink);
-      border-radius: 50%;
-      font-weight: 850;
+      max-width: 660px;
+      margin-bottom: 24px;
+      color: var(--muted);
+      font-size: clamp(1.08rem, 1.6vw, 1.25rem);
     }
 
     .hero-meta {
       display: flex;
-      flex-wrap: wrap;
       gap: 12px;
-      margin-top: 26px;
-      color: var(--ink-soft);
-      font-family: var(--mono);
+      color: var(--muted);
       font-size: 0.78rem;
     }
 
-    .hero-meta span {
-      padding: 5px 9px;
-      background: rgba(255, 253, 247, 0.65);
-      border: 1px solid var(--line);
-      border-radius: 999px;
+    .hero-meta span + span::before {
+      content: "·";
+      margin-right: 12px;
     }
 
-    .hero-machine {
-      position: relative;
-      min-height: 530px;
-      display: grid;
-      place-items: center;
-    }
-
-    .machine-board {
-      position: relative;
-      width: min(460px, 100%);
-      aspect-ratio: 0.92;
-      background: var(--paper-light);
-      border: 2px solid var(--ink);
-      border-radius: 18px;
-      box-shadow: 12px 14px 0 var(--ink);
-      transform: rotate(1deg);
-    }
-
-    .board-label {
-      position: absolute;
-      top: 18px;
-      left: 20px;
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      font-weight: 750;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .machine-path {
-      position: absolute;
-      top: 30%;
-      left: 17%;
-      width: 66%;
-      height: 41%;
-      overflow: visible;
-    }
-
-    .machine-path path {
-      fill: none;
-      stroke: var(--wire);
-      stroke-width: 6;
-      stroke-linecap: round;
-      stroke-dasharray: 9 10;
-      animation: cable 7s linear infinite;
-    }
-
-    @keyframes cable {
-      to {
-        stroke-dashoffset: -76;
-      }
-    }
-
-    .machine-node {
-      position: absolute;
-      z-index: 2;
-      display: grid;
-      place-items: center;
-      width: 112px;
-      min-height: 82px;
-      padding: 12px;
-      text-align: center;
-      background: var(--paper);
-      border: 2px solid var(--ink);
-      border-radius: 11px;
-      box-shadow: 4px 5px 0 rgba(23, 32, 42, 0.16);
-      font-size: 0.9rem;
-      font-weight: 700;
-      line-height: 1.2;
-    }
-
-    .machine-node::before {
-      position: absolute;
-      top: -9px;
-      width: 14px;
-      height: 14px;
-      content: "";
-      background: var(--citron);
-      border: 2px solid var(--ink);
-      border-radius: 50%;
-    }
-
-    .machine-node.one {
-      top: 24%;
-      left: 7%;
-      transform: rotate(-2deg);
-    }
-
-    .machine-node.two {
-      top: 56%;
-      left: 37%;
-      background: var(--wire-soft);
-      transform: rotate(1.5deg);
-    }
-
-    .machine-node.three {
-      top: 28%;
-      right: 6%;
-      transform: rotate(2.2deg);
-    }
-
-    .board-note {
-      position: absolute;
-      right: 17px;
-      bottom: 17px;
-      max-width: 150px;
-      padding: 10px 12px;
-      background: var(--citron);
-      border: 2px solid var(--ink);
-      border-radius: 5px;
-      box-shadow: 3px 3px 0 var(--ink);
-      font-size: 0.78rem;
-      font-weight: 700;
-      line-height: 1.25;
-      transform: rotate(-3deg);
-    }
-
-    .lesson-shell {
-      width: min(1220px, calc(100% - 36px));
+    .lesson {
+      width: min(1120px, calc(100% - 40px));
       margin: 0 auto;
       display: grid;
-      grid-template-columns: 220px minmax(0, 1fr);
-      gap: clamp(32px, 5vw, 78px);
+      grid-template-columns: 170px minmax(0, 1fr);
+      gap: clamp(36px, 6vw, 76px);
       align-items: start;
     }
 
     .lesson-nav {
       position: sticky;
-      top: 96px;
-      padding: 16px 0 80px;
+      top: 92px;
+      padding: 16px 0 64px;
     }
 
     .nav-label {
       margin-bottom: 10px;
-      color: var(--ink-soft);
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      font-weight: 750;
-      text-transform: uppercase;
-      letter-spacing: 0.09em;
     }
 
     .nav-items {
       display: grid;
-      gap: 8px;
+      gap: 4px;
     }
 
     .nav-button {
       width: 100%;
       display: grid;
-      grid-template-columns: 28px 1fr;
-      gap: 9px;
+      grid-template-columns: 26px 1fr;
+      gap: 8px;
       align-items: center;
       padding: 8px;
+      color: var(--muted);
       text-align: left;
       background: transparent;
       border: 0;
-      border-radius: 8px;
-      color: var(--ink-soft);
+      border-radius: 0;
       line-height: 1.25;
-      transition: color 180ms ease, background 180ms ease;
     }
 
-    .nav-button:hover {
-      color: var(--ink);
-      background: rgba(255, 253, 247, 0.65);
-    }
-
+    .nav-button:hover,
     .nav-button.active {
       color: var(--ink);
-      background: var(--paper-light);
-      box-shadow: inset 3px 0 0 var(--wire);
+      background: var(--quiet);
+      box-shadow: inset 2px 0 0 var(--ink);
     }
 
     .nav-number {
       display: grid;
       place-items: center;
-      width: 25px;
-      height: 25px;
-      font-family: var(--mono);
-      font-size: 0.7rem;
+      width: 24px;
+      height: 24px;
+      font-size: 0.68rem;
       border: 1px solid currentColor;
       border-radius: 50%;
     }
 
-    .chapters {
-      min-width: 0;
-    }
-
     .chapter {
-      min-height: 88vh;
-      display: grid;
-      align-content: center;
-      padding: clamp(78px, 10vw, 140px) 0;
-      border-top: 2px solid var(--ink);
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 420ms ease, transform 420ms ease;
+      padding: clamp(64px, 8vw, 96px) 0;
+      border-top: 1px solid var(--line);
     }
 
-    .chapter.visible {
-      opacity: 1;
-      transform: translateY(0);
+    .kicker {
+      margin-bottom: 14px;
     }
 
-    .chapter-kicker {
-      margin-bottom: 15px;
-      color: var(--wire);
-    }
-
-    .chapter-plain {
+    .chapter-copy {
       max-width: 800px;
-      margin-bottom: clamp(28px, 5vw, 54px);
-      color: var(--ink-soft);
-      font-size: clamp(1.05rem, 1.5vw, 1.24rem);
+      margin-bottom: 34px;
+      color: var(--muted);
+      font-size: clamp(1.04rem, 1.4vw, 1.18rem);
     }
 
-    .analogy-card {
-      position: relative;
-      margin: 0 0 32px;
-      padding: clamp(22px, 4vw, 36px);
-      background: var(--paper-light);
-      border: 2px solid var(--ink);
-      border-radius: 14px;
-      box-shadow: var(--shadow);
+    .takeaway {
+      margin-top: 30px;
+      padding: 18px 0 18px 22px;
+      border-left: 3px solid var(--ink);
+      font-weight: 600;
     }
 
-    .analogy-card::after {
-      position: absolute;
-      top: -12px;
-      right: 28px;
-      content: "think of it like this";
-      padding: 5px 9px;
-      background: var(--coral);
-      border: 2px solid var(--ink);
-      border-radius: 4px;
-      font-family: var(--mono);
-      font-size: 0.67rem;
-      font-weight: 750;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      transform: rotate(1.5deg);
-    }
-
-    .analogy-card h3 {
-      margin-bottom: 8px;
-      font-size: 1.3rem;
-    }
-
-    .analogy-mapping {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-      margin: 20px 0;
-    }
-
-    .mapping-row {
-      display: grid;
-      grid-template-columns: minmax(0, 0.9fr) auto minmax(0, 1.1fr);
-      gap: 8px;
-      align-items: center;
-      padding: 11px 12px;
-      background: var(--paper);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      font-size: 0.9rem;
-      line-height: 1.35;
-    }
-
-    .mapping-arrow {
-      color: var(--wire);
-      font-family: var(--mono);
-      font-weight: 850;
-    }
-
-    .analogy-limit {
-      margin-bottom: 0;
-      padding-top: 14px;
-      color: var(--ink-soft);
-      border-top: 1px dashed var(--line);
-      font-size: 0.88rem;
-    }
-
-    .visual-card {
-      padding: clamp(20px, 4vw, 36px);
-      background: var(--ink);
-      border: 2px solid var(--ink);
-      border-radius: 16px;
-      box-shadow: 8px 9px 0 var(--wire);
-      color: var(--paper-light);
+    .visual {
+      padding: clamp(20px, 4vw, 32px);
+      border: 1px solid #cccccc;
+      border-radius: 12px;
     }
 
     .visual-header {
       display: flex;
+      align-items: center;
       justify-content: space-between;
       gap: 18px;
-      align-items: center;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
       padding-bottom: 14px;
-      border-bottom: 1px solid rgba(255, 253, 247, 0.19);
+      border-bottom: 1px solid var(--line);
     }
 
     .visual-header h3 {
       margin: 0;
-      font-family: var(--serif);
-      font-size: clamp(1.4rem, 2vw, 1.8rem);
-      font-weight: 500;
+      font-size: clamp(1.25rem, 2vw, 1.55rem);
+      letter-spacing: -0.025em;
     }
 
     .visual-label {
       flex: 0 0 auto;
-      color: var(--citron);
     }
 
     .flow {
       display: grid;
-      grid-template-columns: repeat(var(--count), minmax(110px, 1fr));
-      gap: 28px;
-      align-items: stretch;
+      grid-template-columns: repeat(var(--count), minmax(100px, 1fr));
+      gap: 26px;
     }
 
     .flow-step {
       position: relative;
       min-width: 0;
-      min-height: 118px;
+      min-height: 112px;
       display: grid;
       place-items: center;
       align-content: center;
       gap: 8px;
       padding: 14px;
       text-align: center;
-      color: var(--paper-light);
-      background: rgba(255, 253, 247, 0.07);
-      border: 2px solid rgba(255, 253, 247, 0.38);
-      border-radius: 11px;
-      transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+      background: var(--paper);
+      border: 1px solid #cccccc;
+      border-radius: 8px;
     }
 
     .flow-step:not(:last-child)::after {
       position: absolute;
-      z-index: 0;
       top: 50%;
-      left: calc(100% + 2px);
-      width: 30px;
-      height: 4px;
+      left: calc(100% + 1px);
+      width: 27px;
+      height: 2px;
       content: "";
-      background: var(--wire);
+      background: #cccccc;
       transform: translateY(-50%);
     }
 
-    .flow-step:hover {
-      transform: translateY(-3px);
-      border-color: var(--citron);
-    }
-
+    .flow-step:hover,
     .flow-step.active {
-      color: var(--ink);
-      background: var(--citron);
-      border-color: var(--paper-light);
-      transform: translateY(-3px);
+      color: var(--paper);
+      background: var(--ink);
+      border-color: var(--ink);
     }
 
     .step-number {
       display: grid;
       place-items: center;
-      width: 27px;
-      height: 27px;
-      font-family: var(--mono);
-      font-size: 0.7rem;
+      width: 25px;
+      height: 25px;
+      font-size: 0.68rem;
       border: 1px solid currentColor;
       border-radius: 50%;
     }
 
     .step-label {
-      font-weight: 750;
+      font-weight: 650;
       line-height: 1.25;
     }
 
     .visual-detail {
-      min-height: 118px;
-      margin-top: 24px;
+      min-height: 110px;
+      margin-top: 22px;
       padding: 18px 20px;
-      color: var(--ink);
-      background: var(--paper-light);
-      border-radius: 10px;
+      background: var(--quiet);
+      border-radius: 8px;
     }
 
     .visual-detail h4 {
@@ -710,774 +346,63 @@
 
     .visual-detail p {
       margin-bottom: 0;
-      color: var(--ink-soft);
+      color: var(--muted);
     }
 
-    .technical {
-      display: inline-block;
-      margin-top: 12px;
-      padding: 6px 9px;
-      color: var(--ink);
-      background: var(--wire-soft);
-      border: 1px solid var(--wire);
-      border-radius: 5px;
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      line-height: 1.4;
-    }
-
-    .layers {
-      display: grid;
-      gap: 10px;
-      width: min(640px, 100%);
+    .technologies {
+      width: min(1060px, calc(100% - 40px));
       margin: 0 auto;
+      padding: clamp(64px, 8vw, 96px) 0;
+      border-top: 1px solid var(--line);
     }
 
-    .layer-button {
-      position: relative;
-      width: calc(100% - var(--inset));
-      margin-left: calc(var(--inset) / 2);
-      padding: 15px 18px;
-      color: var(--paper-light);
-      background: rgba(255, 253, 247, 0.08);
-      border: 2px solid rgba(255, 253, 247, 0.42);
-      border-radius: 9px;
-      text-align: left;
-      font-weight: 750;
-      transition: background 180ms ease, color 180ms ease, transform 180ms ease;
-    }
-
-    .layer-button:hover,
-    .layer-button.active {
-      color: var(--ink);
-      background: var(--citron);
-      transform: translateX(4px);
-    }
-
-    .compare-grid {
+    .technology-list {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px;
+      border-top: 1px solid var(--ink);
     }
 
-    .compare-side {
-      padding: 22px;
-      color: var(--ink);
-      background: var(--paper-light);
-      border: 2px solid var(--paper-light);
-      border-radius: 12px;
-    }
-
-    .compare-side:last-child {
-      background: var(--citron);
-    }
-
-    .compare-side h4 {
-      margin: 0 0 8px;
-      font-family: var(--serif);
-      font-size: 1.5rem;
-    }
-
-    .compare-side p {
-      color: var(--ink-soft);
-    }
-
-    .compare-side ul {
+    .technology-row {
       display: grid;
-      gap: 8px;
-      margin: 0;
-      padding-left: 21px;
-    }
-
-    .map-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
-    }
-
-    .map-node {
-      min-height: 104px;
-      padding: 14px;
-      color: var(--paper-light);
-      background: rgba(255, 253, 247, 0.08);
-      border: 2px solid rgba(255, 253, 247, 0.4);
-      border-radius: 50% 44% 48% 42% / 44% 50% 43% 49%;
-      font-weight: 750;
-      transition: background 180ms ease, color 180ms ease, transform 180ms ease;
-    }
-
-    .map-node:hover,
-    .map-node.active {
-      color: var(--ink);
-      background: var(--citron);
-      transform: translateY(-3px) rotate(-1deg);
-    }
-
-    .map-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 18px;
-    }
-
-    .map-link {
-      padding: 5px 8px;
-      color: var(--citron);
-      border: 1px solid rgba(217, 249, 95, 0.55);
-      border-radius: 999px;
-      font-family: var(--mono);
-      font-size: 0.7rem;
-    }
-
-    .takeaway {
-      position: relative;
-      margin-top: 30px;
-      padding: 20px 22px 20px 58px;
-      background: var(--citron);
-      border: 2px solid var(--ink);
-      border-radius: 9px;
-      box-shadow: 4px 5px 0 var(--ink);
-      font-weight: 700;
-    }
-
-    .takeaway::before {
-      position: absolute;
-      top: 18px;
-      left: 17px;
-      display: grid;
-      place-items: center;
-      width: 28px;
-      height: 28px;
-      content: "!";
-      background: var(--paper-light);
-      border: 2px solid var(--ink);
-      border-radius: 50%;
-      font-family: var(--mono);
-    }
-
-    .section-wide {
-      width: min(1060px, calc(100% - 36px));
-      margin: 0 auto;
-      padding: clamp(88px, 12vw, 160px) 0;
-      border-top: 2px solid var(--ink);
-    }
-
-    .section-intro {
-      max-width: 760px;
-      margin-bottom: 44px;
-      color: var(--ink-soft);
-      font-size: 1.12rem;
-    }
-
-    .stack-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 14px;
-      counter-reset: stack-item;
-    }
-
-    .stack-card {
-      position: relative;
-      min-height: 220px;
-      padding: 22px;
-      background: var(--paper-light);
-      border: 1.5px solid var(--ink);
-      border-radius: 10px;
-    }
-
-    .stack-card::before {
-      display: grid;
-      place-items: center;
-      width: 30px;
-      height: 30px;
-      margin-bottom: 34px;
-      content: counter(stack-item, decimal-leading-zero);
-      counter-increment: stack-item;
-      color: var(--paper-light);
-      background: var(--ink);
-      border-radius: 50%;
-      font-family: var(--mono);
-      font-size: 0.7rem;
-    }
-
-    .stack-layer {
-      margin-bottom: 7px;
-      color: var(--wire);
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      font-weight: 750;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .stack-card h3 {
-      margin: 0 0 8px;
-      font-family: var(--serif);
-      font-size: 1.45rem;
-      line-height: 1.08;
-    }
-
-    .stack-card p {
-      margin: 0;
-      color: var(--ink-soft);
-    }
-
-    .stack-connection {
-      margin-top: 16px;
-      padding-top: 13px;
-      color: var(--ink);
-      border-top: 1px solid rgba(23, 32, 42, 0.18);
-      font-size: 0.86rem;
-    }
-
-    .stack-connection strong {
-      display: block;
-      margin-bottom: 3px;
-      font-family: var(--mono);
-      font-size: 0.67rem;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-
-    .concept-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px;
-    }
-
-    .concept-card {
-      background: var(--paper-light);
-      border: 2px solid var(--ink);
-      border-radius: 11px;
-      box-shadow: var(--shadow);
-      overflow: clip;
-    }
-
-    .concept-card summary {
-      position: relative;
-      padding: 19px 52px 19px 20px;
-      list-style: none;
-      font-size: 1.08rem;
-      font-weight: 750;
-      cursor: pointer;
-    }
-
-    .concept-card summary::-webkit-details-marker {
-      display: none;
-    }
-
-    .concept-card summary::after {
-      position: absolute;
-      top: 17px;
-      right: 17px;
-      display: grid;
-      place-items: center;
-      width: 28px;
-      height: 28px;
-      content: "+";
-      color: var(--paper-light);
-      background: var(--wire);
-      border-radius: 50%;
-      transition: transform 180ms ease;
-    }
-
-    .concept-card[open] summary::after {
-      transform: rotate(45deg);
-    }
-
-    .concept-body {
-      padding: 0 20px 20px;
-      color: var(--ink-soft);
-    }
-
-    .in-build {
-      margin-top: 14px;
-      padding: 12px 14px;
-      color: var(--ink);
-      background: var(--wire-soft);
-      border-left: 4px solid var(--wire);
-      border-radius: 5px;
-      font-size: 0.9rem;
-    }
-
-    .term-lookup {
-      position: relative;
-      color: inherit;
-      text-decoration-line: underline;
-      text-decoration-style: dotted;
-      text-decoration-color: var(--wire);
-      text-decoration-thickness: 1.5px;
-      text-underline-offset: 4px;
-      cursor: help;
-      outline: none;
-    }
-
-    .term-lookup:focus-visible {
-      border-radius: 2px;
-      outline: 3px solid var(--citron);
-      outline-offset: 3px;
-    }
-
-    .term-tooltip {
-      position: absolute;
-      z-index: 90;
-      bottom: calc(100% + 10px);
-      left: 50%;
-      width: min(320px, calc(100vw - 36px));
-      padding: 14px 15px;
-      color: var(--paper-light);
-      background: var(--ink);
-      border: 2px solid var(--paper-light);
-      border-radius: 9px;
-      box-shadow: 5px 6px 0 var(--wire);
-      font-family: var(--sans);
-      font-size: 0.83rem;
-      font-weight: 500;
-      line-height: 1.45;
-      text-align: left;
-      text-decoration: none;
-      opacity: 0;
-      pointer-events: none;
-      transform: translate(-50%, 5px);
-      transition: opacity 140ms ease, transform 140ms ease;
-    }
-
-    .term-tooltip::after {
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      width: 10px;
-      height: 10px;
-      content: "";
-      background: var(--ink);
-      border-right: 2px solid var(--paper-light);
-      border-bottom: 2px solid var(--paper-light);
-      transform: translate(-50%, -5px) rotate(45deg);
-    }
-
-    .term-tooltip strong,
-    .term-tooltip span {
-      display: block;
-    }
-
-    .term-tooltip strong {
-      margin-bottom: 5px;
-      color: var(--citron);
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-
-    .term-tooltip .term-in-build {
-      margin-top: 8px;
-      padding-top: 8px;
-      color: rgba(255, 253, 247, 0.78);
-      border-top: 1px solid rgba(255, 253, 247, 0.24);
-    }
-
-    .term-lookup:hover .term-tooltip,
-    .term-lookup:focus .term-tooltip,
-    .term-lookup.tooltip-open .term-tooltip {
-      opacity: 1;
-      transform: translate(-50%, 0);
-    }
-
-    .term-lookup.tooltip-align-left .term-tooltip {
-      right: auto;
-      left: 0;
-      transform: translate(0, 5px);
-    }
-
-    .term-lookup.tooltip-align-left:hover .term-tooltip,
-    .term-lookup.tooltip-align-left:focus .term-tooltip,
-    .term-lookup.tooltip-align-left.tooltip-open .term-tooltip {
-      transform: translate(0, 0);
-    }
-
-    .term-lookup.tooltip-align-left .term-tooltip::after {
-      left: 20px;
-    }
-
-    .term-lookup.tooltip-align-right .term-tooltip {
-      right: 0;
-      left: auto;
-      transform: translate(0, 5px);
-    }
-
-    .term-lookup.tooltip-align-right:hover .term-tooltip,
-    .term-lookup.tooltip-align-right:focus .term-tooltip,
-    .term-lookup.tooltip-align-right.tooltip-open .term-tooltip {
-      transform: translate(0, 0);
-    }
-
-    .term-lookup.tooltip-align-right .term-tooltip::after {
-      right: 20px;
-      left: auto;
-    }
-
-    .playground {
-      display: grid;
-      grid-template-columns: minmax(220px, 0.34fr) minmax(0, 0.66fr);
+      grid-template-columns: minmax(150px, 0.32fr) minmax(0, 1fr);
       gap: 24px;
-      padding: clamp(22px, 4vw, 38px);
-      color: var(--paper-light);
-      background: var(--ink);
-      border: 2px solid var(--ink);
-      border-radius: 16px;
-      box-shadow: 9px 10px 0 var(--coral);
+      padding: 20px 0;
+      border-bottom: 1px solid var(--line);
     }
 
-    .scenario-buttons {
-      display: grid;
-      align-content: start;
-      gap: 10px;
+    .technology-row h3,
+    .technology-row p {
+      margin: 0;
     }
 
-    .scenario-button {
-      padding: 13px 14px;
-      color: var(--paper-light);
-      text-align: left;
-      background: transparent;
-      border: 1px solid rgba(255, 253, 247, 0.4);
-      border-radius: 8px;
-      font-weight: 700;
-      transition: transform 180ms ease, background 180ms ease, color 180ms ease;
+    .technology-row h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
     }
 
-    .scenario-button:hover {
-      transform: translateX(3px);
-    }
-
-    .scenario-button.active {
-      color: var(--ink);
-      background: var(--citron);
-      border-color: var(--citron);
-    }
-
-    .scenario-stage {
-      min-height: 310px;
-      padding: 24px;
-      color: var(--ink);
-      background: var(--paper-light);
-      border-radius: 12px;
-    }
-
-    .scenario-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      margin-bottom: 18px;
-      padding: 5px 9px;
-      background: var(--citron);
-      border: 1px solid var(--ink);
-      border-radius: 999px;
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      font-weight: 750;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-
-    .scenario-status.broken {
-      background: var(--coral);
-    }
-
-    .scenario-status.recovered {
-      background: #BEEEDC;
-    }
-
-    .scenario-stage h3 {
-      margin-bottom: 9px;
-      font-family: var(--serif);
-      font-size: 1.8rem;
-    }
-
-    .trace {
-      display: grid;
-      gap: 9px;
-      margin-top: 22px;
-      padding: 0;
-      list-style: none;
-    }
-
-    .trace li {
-      position: relative;
-      padding: 10px 12px 10px 39px;
-      background: var(--paper);
-      border: 1px solid var(--line);
-      border-radius: 7px;
-      font-size: 0.9rem;
-    }
-
-    .trace li::before {
-      position: absolute;
-      top: 11px;
-      left: 12px;
-      display: grid;
-      place-items: center;
-      width: 18px;
-      height: 18px;
-      content: attr(data-step);
-      color: var(--paper-light);
-      background: var(--wire);
-      border-radius: 50%;
-      font-family: var(--mono);
-      font-size: 0.6rem;
-    }
-
-    .quiz-shell {
-      display: grid;
-      grid-template-columns: minmax(0, 0.72fr) minmax(220px, 0.28fr);
-      gap: 24px;
-      align-items: stretch;
-    }
-
-    .quiz-card {
-      min-height: 430px;
-      padding: clamp(24px, 5vw, 44px);
-      background: var(--paper-light);
-      border: 2px solid var(--ink);
-      border-radius: 14px;
-      box-shadow: var(--shadow);
-    }
-
-    .quiz-count {
-      margin-bottom: 18px;
-      color: var(--wire);
-      font-family: var(--mono);
-      font-size: 0.75rem;
-      font-weight: 750;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-    }
-
-    .quiz-question {
-      margin-bottom: 24px;
-      font-family: var(--serif);
-      font-size: clamp(1.5rem, 3vw, 2.3rem);
-      line-height: 1.2;
-    }
-
-    .quiz-choices {
-      display: grid;
-      gap: 11px;
-    }
-
-    .quiz-choice {
-      padding: 14px 16px;
-      text-align: left;
-      background: var(--paper);
-      border: 2px solid var(--ink);
-      border-radius: 8px;
-      transition: transform 180ms ease, background 180ms ease;
-    }
-
-    .quiz-choice:hover:not(:disabled) {
-      background: var(--wire-soft);
-      transform: translateY(-2px);
-    }
-
-    .quiz-choice.selected.correct {
-      background: var(--citron);
-    }
-
-    .quiz-choice.selected.try-again {
-      background: #FFD4CE;
-    }
-
-    .quiz-choice:disabled {
-      cursor: default;
-      opacity: 0.72;
-    }
-
-    .quiz-choice.selected {
-      opacity: 1;
-    }
-
-    .quiz-feedback {
-      margin-top: 18px;
-      padding: 15px 17px;
-      background: var(--wire-soft);
-      border-left: 5px solid var(--wire);
-      border-radius: 6px;
-    }
-
-    .quiz-next,
-    .quiz-restart,
-    .copy-button {
-      margin-top: 18px;
-      padding: 12px 17px;
-      color: var(--paper-light);
-      background: var(--ink);
-      border: 2px solid var(--ink);
-      border-radius: 7px;
-      box-shadow: 3px 3px 0 var(--wire);
-      font-weight: 750;
-      transition: transform 180ms ease, box-shadow 180ms ease;
-    }
-
-    .quiz-next:hover,
-    .quiz-restart:hover,
-    .copy-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 4px 5px 0 var(--wire);
-    }
-
-    .quiz-meter {
-      display: grid;
-      align-content: space-between;
-      min-height: 430px;
-      padding: 24px;
-      color: var(--paper-light);
-      background: var(--wire);
-      border: 2px solid var(--ink);
-      border-radius: 14px;
-      box-shadow: var(--shadow);
-    }
-
-    .meter-number {
-      font-family: var(--serif);
-      font-size: clamp(4rem, 8vw, 6.5rem);
-      line-height: 0.85;
-    }
-
-    .meter-label {
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .meter-dots {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 18px;
-    }
-
-    .meter-dot {
-      width: 15px;
-      height: 15px;
-      background: rgba(255, 253, 247, 0.25);
-      border: 1px solid var(--paper-light);
-      border-radius: 50%;
-    }
-
-    .meter-dot.done {
-      background: var(--citron);
-    }
-
-    .question-dock {
-      display: grid;
-      grid-template-columns: minmax(0, 0.44fr) minmax(0, 0.56fr);
-      gap: clamp(28px, 6vw, 72px);
-      align-items: start;
-    }
-
-    .question-note {
-      padding: 18px 20px;
-      background: var(--citron);
-      border: 2px solid var(--ink);
-      border-radius: 8px;
-      box-shadow: var(--shadow);
-      transform: rotate(-1deg);
-    }
-
-    .question-note strong {
-      display: block;
-      margin-bottom: 5px;
-    }
-
-    .prompt-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-
-    .prompt-chip {
-      padding: 7px 10px;
-      color: var(--ink);
-      background: var(--paper-light);
-      border: 1px solid var(--ink);
-      border-radius: 999px;
-      font-size: 0.83rem;
-      transition: background 180ms ease, transform 180ms ease;
-    }
-
-    .prompt-chip:hover {
-      background: var(--wire-soft);
-      transform: translateY(-2px);
-    }
-
-    .question-input {
-      width: 100%;
-      min-height: 150px;
-      padding: 16px;
-      resize: vertical;
-      color: var(--ink);
-      background: var(--paper-light);
-      border: 2px solid var(--ink);
-      border-radius: 9px;
-      box-shadow: var(--shadow);
-    }
-
-    .copy-status {
-      min-height: 24px;
-      margin-top: 12px;
-      color: var(--teal);
-      font-weight: 750;
+    .technology-row p {
+      color: var(--muted);
     }
 
     footer {
-      padding: 36px 20px 48px;
-      color: var(--ink-soft);
+      padding: 34px 20px 44px;
+      color: var(--muted);
       text-align: center;
-      border-top: 1px solid var(--line);
-      font-family: var(--mono);
+      border-top: 1px solid #e6e6e6;
       font-size: 0.72rem;
     }
 
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-
-    @media (max-width: 980px) {
-      .hero-inner {
-        grid-template-columns: 1fr;
-      }
-
-      .hero-machine {
-        min-height: 470px;
-      }
-
-      .machine-board {
-        max-width: 430px;
-      }
-
-      .lesson-shell {
+    @media (max-width: 900px) {
+      .lesson {
         display: block;
       }
 
       .lesson-nav {
-        position: sticky;
-        z-index: 30;
-        top: 68px;
-        margin: 0 -18px;
-        padding: 10px 18px;
-        overflow-x: auto;
-        background: rgba(247, 241, 227, 0.95);
+        z-index: 40;
+        top: 64px;
+        margin: 0 -20px;
+        padding: 8px 20px;
+        background: rgba(255, 255, 255, 0.97);
         border-bottom: 1px solid var(--line);
-        backdrop-filter: blur(12px);
       }
 
       .nav-label {
@@ -1485,81 +410,57 @@
       }
 
       .nav-items {
-        display: flex;
-        width: max-content;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        width: 100%;
       }
 
       .nav-button {
-        width: auto;
-        min-width: 150px;
+        width: 100%;
+        display: block;
+        min-width: 0;
+        padding: 10px 6px;
+        text-align: center;
+        font-size: 0.78rem;
+      }
+
+      .nav-button:hover,
+      .nav-button.active {
+        box-shadow: inset 0 -2px 0 var(--ink);
+      }
+
+      .nav-number {
+        display: none;
       }
 
       .chapter {
-        min-height: auto;
-      }
-
-      .playground,
-      .question-dock {
-        grid-template-columns: 1fr;
+        scroll-margin-top: 150px;
       }
     }
 
     @media (max-width: 720px) {
-      body {
-        font-size: 16px;
-      }
-
       .topbar {
-        padding-inline: 14px;
-      }
-
-      .wordmark span:last-child {
-        display: none;
+        padding-inline: 16px;
       }
 
       .hero {
-        min-height: auto;
-        padding: 64px 18px 92px;
+        width: min(100% - 36px, 1060px);
+        padding: 54px 0 58px;
       }
 
       h1 {
-        font-size: clamp(3rem, 17vw, 4.8rem);
+        font-size: clamp(2.65rem, 13vw, 4rem);
       }
 
-      .hero-machine {
-        min-height: 370px;
+      .lesson {
+        width: min(100% - 36px, 1120px);
       }
 
-      .machine-node {
-        width: 86px;
-        min-height: 68px;
-        padding: 8px;
-        font-size: 0.75rem;
+      .lesson-nav {
+        margin-inline: -18px;
       }
 
-      .board-note {
-        max-width: 124px;
-      }
-
-      .analogy-mapping,
-      .stack-grid,
-      .concept-grid,
-      .compare-grid,
-      .quiz-shell {
-        grid-template-columns: 1fr;
-      }
-
-      .stack-card {
-        min-height: 0;
-      }
-
-
-      .mapping-row {
-        grid-template-columns: 1fr;
-      }
-
-      .mapping-arrow {
-        transform: rotate(90deg);
+      .chapter {
+        padding: 56px 0;
       }
 
       .flow {
@@ -1567,43 +468,26 @@
       }
 
       .flow-step:not(:last-child)::after {
-        top: calc(100% + 2px);
+        top: calc(100% + 1px);
         left: 50%;
-        width: 4px;
-        height: 30px;
+        width: 2px;
+        height: 27px;
         transform: translateX(-50%);
       }
 
-      .map-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+      .technology-row {
+        grid-template-columns: 1fr;
+        gap: 6px;
       }
 
-      .playground {
-        padding: 18px;
-      }
-
-      .scenario-buttons {
-        display: flex;
-        overflow-x: auto;
-      }
-
-      .scenario-button {
-        min-width: 154px;
-      }
-
-      .quiz-meter {
-        min-height: 220px;
+      .technologies {
+        width: min(100% - 36px, 1060px);
       }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        scroll-behavior: auto !important;
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
+      html {
+        scroll-behavior: auto;
       }
     }
   </style>
@@ -1612,11 +496,8 @@
   <a class="skip-link" href="#lesson">Skip to lesson</a>
   <div class="progress-track" aria-hidden="true"><div class="progress-fill" id="page-progress"></div></div>
   <header class="topbar">
-    <div class="wordmark">
-      <span class="mark" aria-hidden="true"><span class="mark-wire"></span></span>
-      <span>teach</span>
-    </div>
-    <div class="subject-pill" id="subject-pill"></div>
+    <div class="wordmark">teach</div>
+    <div class="subject" id="subject"></div>
   </header>
   <main id="app"></main>
   <footer>Made locally with Teach. Nothing on this page is sent anywhere.</footer>
@@ -1633,12 +514,6 @@
       return element;
     }
 
-    function button(className, text) {
-      const element = make("button", className, text);
-      element.type = "button";
-      return element;
-    }
-
     function append(parent) {
       for (let index = 1; index < arguments.length; index += 1) {
         const child = arguments[index];
@@ -1649,219 +524,97 @@
 
     function renderHero() {
       const hero = make("section", "hero");
-      const inner = make("div", "hero-inner");
-      const copy = make("div", "hero-copy");
-      const eyebrow = make("div", "eyebrow", "you made this");
-      const title = make("h1", "", LESSON.meta.title);
-      const deck = make("p", "hero-deck", LESSON.meta.one_liner);
-      const win = make("div", "builder-win");
-      const badge = make("span", "win-badge", "✓");
-      badge.setAttribute("aria-hidden", "true");
-      const winCopy = make("div");
-      append(winCopy, make("strong", "", "Your builder win"), make("span", "", LESSON.meta.builder_win));
-      append(win, badge, winCopy);
-
       const meta = make("div", "hero-meta");
       append(
         meta,
-        make("span", "", LESSON.meta.minutes + " minute lesson"),
-        make("span", "", LESSON.story.length + " visual chapters"),
-        make("span", "", LESSON.quiz.length + " question check")
+        make("span", "", LESSON.meta.minutes + " minute read"),
+        make("span", "", "3 clear parts")
       );
-      append(copy, eyebrow, title, deck, win, meta);
-
-      const machine = make("div", "hero-machine");
-      machine.innerHTML =
-        '<div class="machine-board" aria-label="A visual path from your build to understanding">' +
-          '<div class="board-label">the invisible parts, made visible</div>' +
-          '<svg class="machine-path" viewBox="0 0 300 200" aria-hidden="true">' +
-            '<path d="M10 34 C86 20, 68 178, 154 151 S230 21, 288 43"></path>' +
-          '</svg>' +
-          '<div class="machine-node one">what you built</div>' +
-          '<div class="machine-node two">how it moves</div>' +
-          '<div class="machine-node three">why it works</div>' +
-          '<div class="board-note">click the parts. follow the wire.</div>' +
-        '</div>';
-
-      append(inner, copy, machine);
-      append(hero, inner);
+      append(
+        hero,
+        make("div", "eyebrow", "Your build, explained"),
+        make("h1", "", LESSON.meta.title),
+        make("p", "hero-deck", LESSON.meta.one_liner),
+        meta
+      );
       return hero;
     }
 
-    function renderAnalogy(analogy) {
-      if (!analogy) return null;
-      const card = make("aside", "analogy-card");
-      append(card, make("h3", "", analogy.title), make("p", "", analogy.body));
-      const mapping = make("div", "analogy-mapping");
-      (analogy.mapping || []).forEach(function (item) {
-        const row = make("div", "mapping-row");
-        append(
-          row,
-          make("strong", "", item.familiar),
-          make("span", "mapping-arrow", "→"),
-          make("span", "", item.real)
-        );
-        mapping.appendChild(row);
+    function selectStep(buttons, detail, item, selected) {
+      buttons.forEach(function (control) {
+        const active = control === selected;
+        control.classList.toggle("active", active);
+        control.setAttribute("aria-pressed", active ? "true" : "false");
       });
-      card.appendChild(mapping);
-      if (analogy.limit) {
-        const limit = make("p", "analogy-limit");
-        append(limit, make("strong", "", "Where this comparison stops: "), document.createTextNode(analogy.limit));
-        card.appendChild(limit);
-      }
-      return card;
+      detail.replaceChildren(
+        make("h4", "", item.label),
+        make("p", "", item.detail)
+      );
     }
 
-    function setDetail(detail, item) {
-      detail.replaceChildren();
-      append(detail, make("h4", "", item.label), make("p", "", item.detail));
-      if (item.technical) detail.appendChild(make("span", "technical", item.technical));
-    }
-
-    function renderFlow(visual, timeline) {
-      const items = visual.steps;
-      const container = make("div", "flow");
-      container.style.setProperty("--count", items.length);
-      const detail = make("div", "visual-detail");
-      const controls = [];
-      items.forEach(function (item, index) {
-        const control = button("flow-step", "");
-        control.setAttribute("aria-pressed", index === 0 ? "true" : "false");
-        append(
-          control,
-          make("span", "step-number", timeline ? String(index + 1).padStart(2, "0") : String(index + 1)),
-          make("span", "step-label", item.label)
-        );
-        control.addEventListener("click", function () {
-          controls.forEach(function (other) {
-            other.classList.remove("active");
-            other.setAttribute("aria-pressed", "false");
-          });
-          control.classList.add("active");
-          control.setAttribute("aria-pressed", "true");
-          setDetail(detail, item);
-        });
-        controls.push(control);
-        container.appendChild(control);
-      });
-      controls[0].classList.add("active");
-      setDetail(detail, items[0]);
-      const wrap = make("div");
-      append(wrap, container, detail);
-      return wrap;
-    }
-
-    function renderLayers(visual) {
-      const wrap = make("div");
-      const stack = make("div", "layers");
-      const detail = make("div", "visual-detail");
-      const controls = [];
-      visual.layers.forEach(function (item, index) {
-        const control = button("layer-button", item.label);
-        control.style.setProperty("--inset", Math.min(index * 7, 28) + "%");
-        control.setAttribute("aria-pressed", index === 0 ? "true" : "false");
-        control.addEventListener("click", function () {
-          controls.forEach(function (other) {
-            other.classList.remove("active");
-            other.setAttribute("aria-pressed", "false");
-          });
-          control.classList.add("active");
-          control.setAttribute("aria-pressed", "true");
-          setDetail(detail, item);
-        });
-        controls.push(control);
-        stack.appendChild(control);
-      });
-      controls[0].classList.add("active");
-      setDetail(detail, visual.layers[0]);
-      append(wrap, stack, detail);
-      return wrap;
-    }
-
-    function renderCompare(visual) {
-      const grid = make("div", "compare-grid");
-      [visual.left, visual.right].forEach(function (side) {
-        const card = make("div", "compare-side");
-        append(card, make("h4", "", side.label), make("p", "", side.detail));
-        const list = make("ul");
-        side.points.forEach(function (point) {
-          list.appendChild(make("li", "", point));
-        });
-        append(card, list);
-        grid.appendChild(card);
-      });
-      return grid;
-    }
-
-    function renderMap(visual) {
-      const wrap = make("div");
-      const grid = make("div", "map-grid");
-      const detail = make("div", "visual-detail");
-      const controls = [];
-      const labels = {};
-      visual.nodes.forEach(function (item, index) {
-        labels[item.id] = item.label;
-        const control = button("map-node", item.label);
-        control.setAttribute("aria-pressed", index === 0 ? "true" : "false");
-        control.addEventListener("click", function () {
-          controls.forEach(function (other) {
-            other.classList.remove("active");
-            other.setAttribute("aria-pressed", "false");
-          });
-          control.classList.add("active");
-          control.setAttribute("aria-pressed", "true");
-          setDetail(detail, item);
-        });
-        controls.push(control);
-        grid.appendChild(control);
-      });
-      controls[0].classList.add("active");
-      setDetail(detail, visual.nodes[0]);
-      const links = make("div", "map-links");
-      (visual.links || []).forEach(function (link) {
-        links.appendChild(make("span", "map-link", labels[link.from] + " → " + labels[link.to]));
-      });
-      append(wrap, grid, links, detail);
-      return wrap;
-    }
-
-    function renderVisual(visual) {
-      const card = make("div", "visual-card");
+    function renderFlow(visual) {
+      const card = make("div", "visual");
       const header = make("div", "visual-header");
       append(
         header,
-        make("h3", "", visual.title || "Follow what happens"),
-        make("span", "visual-label", "click to explore")
+        make("h3", "", visual.title || "What happens"),
+        make("span", "visual-label", visual.steps.length + " steps")
       );
-      card.appendChild(header);
+      const flow = make("div", "flow");
+      flow.style.setProperty("--count", visual.steps.length);
+      const detail = make("div", "visual-detail");
+      detail.id = "flow-detail";
+      detail.setAttribute("role", "status");
+      detail.setAttribute("aria-live", "polite");
+      detail.setAttribute("aria-atomic", "true");
+      const buttons = [];
 
-      if (visual.type === "flow") card.appendChild(renderFlow(visual, false));
-      if (visual.type === "timeline") card.appendChild(renderFlow(visual, true));
-      if (visual.type === "layers") card.appendChild(renderLayers(visual));
-      if (visual.type === "compare") card.appendChild(renderCompare(visual));
-      if (visual.type === "map") card.appendChild(renderMap(visual));
+      visual.steps.forEach(function (item, index) {
+        const control = make("button", "flow-step");
+        control.type = "button";
+        append(
+          control,
+          make("span", "step-number", index + 1),
+          make("span", "step-label", item.label)
+        );
+        control.setAttribute("aria-controls", detail.id);
+        control.addEventListener("click", function () {
+          selectStep(buttons, detail, item, control);
+        });
+        buttons.push(control);
+        flow.appendChild(control);
+      });
+
+      selectStep(buttons, detail, visual.steps[0], buttons[0]);
+      append(card, header, flow, detail);
       return card;
     }
 
-    function renderChapters() {
-      const shell = make("div", "lesson-shell");
+    function renderLesson() {
+      const shell = make("div", "lesson");
       shell.id = "lesson";
       const nav = make("nav", "lesson-nav");
-      nav.setAttribute("aria-label", "Lesson chapters");
+      nav.setAttribute("aria-label", "Lesson parts");
       append(nav, make("div", "nav-label", "Your path"));
       const navItems = make("div", "nav-items");
       const chapters = make("div", "chapters");
+      const navLabels = ["The problem", "What you built", "How it works"];
       const navButtons = [];
 
       LESSON.story.forEach(function (chapter, index) {
-        const navButton = button("nav-button", "");
+        const navButton = make("button", "nav-button");
+        navButton.type = "button";
         append(
           navButton,
           make("span", "nav-number", String(index + 1).padStart(2, "0")),
-          make("span", "", chapter.title)
+          make("span", "", navLabels[index])
         );
         navButton.addEventListener("click", function () {
-          document.getElementById(chapter.id).scrollIntoView({ behavior: "smooth", block: "start" });
+          const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          document.getElementById(chapter.id).scrollIntoView({
+            behavior: reduceMotion ? "auto" : "smooth",
+            block: "start"
+          });
         });
         navButtons.push(navButton);
         navItems.appendChild(navButton);
@@ -1871,11 +624,10 @@
         section.dataset.chapter = String(index);
         append(
           section,
-          make("div", "chapter-kicker", chapter.kicker),
+          make("div", "kicker", chapter.kicker),
           make("h2", "", chapter.title),
-          make("p", "chapter-plain", chapter.plain),
-          renderAnalogy(chapter.analogy),
-          renderVisual(chapter.visual),
+          make("p", "chapter-copy", chapter.plain),
+          chapter.visual ? renderFlow(chapter.visual) : null,
           make("div", "takeaway", chapter.takeaway)
         );
         chapters.appendChild(section);
@@ -1883,448 +635,63 @@
 
       nav.appendChild(navItems);
       append(shell, nav, chapters);
+      navButtons[0].classList.add("active");
+      navButtons[0].setAttribute("aria-current", "step");
 
       const observer = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-            const activeIndex = Number(entry.target.dataset.chapter);
-            navButtons.forEach(function (navButton, index) {
-              navButton.classList.toggle("active", index === activeIndex);
-              if (index === activeIndex) navButton.setAttribute("aria-current", "step");
-              else navButton.removeAttribute("aria-current");
-            });
-          }
+          if (!entry.isIntersecting) return;
+          const activeIndex = Number(entry.target.dataset.chapter);
+          navButtons.forEach(function (button, index) {
+            button.classList.toggle("active", index === activeIndex);
+            if (index === activeIndex) button.setAttribute("aria-current", "step");
+            else button.removeAttribute("aria-current");
+          });
         });
-      }, { rootMargin: "-30% 0px -45% 0px", threshold: 0.08 });
+      }, { rootMargin: "-30% 0px -50% 0px", threshold: 0.05 });
 
       chapters.querySelectorAll(".chapter").forEach(function (chapter) {
         observer.observe(chapter);
       });
-      if (navButtons[0]) navButtons[0].classList.add("active");
       return shell;
     }
 
-    function renderConcepts() {
-      const section = make("section", "section-wide");
+    function renderTechnologies() {
+      const items = LESSON.technologies || [];
+      if (!items.length) return null;
+      const section = make("section", "technologies");
       append(
         section,
-        make("div", "chapter-kicker", "words worth keeping"),
-        make("h2", "", "Dictionary for this build"),
-        make("p", "section-intro", "Every technical word used in this lesson is defined here. The dotted-underlined words above open these same definitions without making you leave your place.")
+        make("div", "kicker", "Tools used"),
+        make("h2", "", "The few technologies that matter")
       );
-      const grid = make("div", "concept-grid");
-      LESSON.concepts.forEach(function (concept) {
-        const card = make("details", "concept-card");
-        const summary = make("summary", "", concept.term);
-        const body = make("div", "concept-body");
-        const inBuild = make("div", "in-build");
-        append(
-          inBuild,
-          make("strong", "", "In your build: "),
-          document.createTextNode(concept.in_build)
-        );
-        append(body, make("p", "", concept.plain), inBuild);
-        append(card, summary, body);
-        grid.appendChild(card);
+      const list = make("div", "technology-list");
+      items.forEach(function (item) {
+        const row = make("article", "technology-row");
+        append(row, make("h3", "", item.name), make("p", "", item.explanation));
+        list.appendChild(row);
       });
-      section.appendChild(grid);
+      section.appendChild(list);
       return section;
     }
 
-    function renderStack() {
-      const section = make("section", "section-wide");
-      append(
-        section,
-        make("div", "chapter-kicker", "the actual technology"),
-        make("h2", "", "Your tech stack, in plain English"),
-        make("p", "section-intro", LESSON.stack.summary)
-      );
-      const grid = make("div", "stack-grid");
-      LESSON.stack.items.forEach(function (item) {
-        const card = make("article", "stack-card");
-        const connection = make("div", "stack-connection");
-        append(
-          connection,
-          make("strong", "", "What happens next"),
-          document.createTextNode(item.connection)
-        );
-        append(
-          card,
-          make("div", "stack-layer", item.layer),
-          make("h3", "", item.technology),
-          make("p", "", item.role),
-          connection
-        );
-        grid.appendChild(card);
-      });
-      section.appendChild(grid);
-      return section;
-    }
-
-    function escapeRegExp(value) {
-      return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    }
-
-    function applyGlossaryTooltips(root) {
-      const names = [];
-      const byName = new Map();
-      LESSON.concepts.forEach(function (concept) {
-        [concept.term].concat(concept.aliases || []).forEach(function (name) {
-          const normalized = name.toLocaleLowerCase();
-          if (!byName.has(normalized)) {
-            byName.set(normalized, concept);
-            names.push(name);
-          }
-        });
-      });
-      if (!names.length) return;
-
-      names.sort(function (left, right) { return right.length - left.length; });
-      const matcher = new RegExp("(^|[^A-Za-z0-9_])(" + names.map(escapeRegExp).join("|") + ")(?=$|[^A-Za-z0-9_])", "gi");
-      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
-        acceptNode: function (node) {
-          if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
-          const parent = node.parentElement;
-          if (!parent) return NodeFilter.FILTER_REJECT;
-          if (parent.closest(".term-lookup, .concept-grid, button, textarea, script, style, [aria-hidden='true']")) {
-            return NodeFilter.FILTER_REJECT;
-          }
-          matcher.lastIndex = 0;
-          return matcher.test(node.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
-        }
-      });
-
-      const textNodes = [];
-      while (walker.nextNode()) textNodes.push(walker.currentNode);
-
-      let tooltipIndex = document.querySelectorAll(".term-tooltip").length;
-      textNodes.forEach(function (textNode) {
-        const text = textNode.nodeValue;
-        const fragment = document.createDocumentFragment();
-        let cursor = 0;
-        matcher.lastIndex = 0;
-        let match;
-        while ((match = matcher.exec(text)) !== null) {
-          const prefix = match[1];
-          const visibleTerm = match[2];
-          const concept = byName.get(visibleTerm.toLocaleLowerCase());
-          fragment.appendChild(document.createTextNode(text.slice(cursor, match.index) + prefix));
-
-          const lookup = make("span", "term-lookup", visibleTerm);
-          lookup.tabIndex = 0;
-          const tooltip = make("span", "term-tooltip");
-          const tooltipId = "term-tooltip-" + tooltipIndex;
-          tooltipIndex += 1;
-          tooltip.id = tooltipId;
-          tooltip.setAttribute("role", "tooltip");
-          lookup.setAttribute("aria-describedby", tooltipId);
-          function alignTooltip() {
-            lookup.classList.remove("tooltip-align-left", "tooltip-align-right");
-            const bounds = lookup.getBoundingClientRect();
-            const halfTooltip = Math.min(160, (window.innerWidth - 36) / 2);
-            const center = bounds.left + (bounds.width / 2);
-            if (center < halfTooltip + 18) lookup.classList.add("tooltip-align-left");
-            else if (window.innerWidth - center < halfTooltip + 18) lookup.classList.add("tooltip-align-right");
-          }
-          lookup.addEventListener("mouseenter", alignTooltip);
-          lookup.addEventListener("focus", alignTooltip);
-          lookup.addEventListener("click", function (event) {
-            event.stopPropagation();
-            const wasOpen = lookup.classList.contains("tooltip-open");
-            document.querySelectorAll(".term-lookup.tooltip-open").forEach(function (openLookup) {
-              openLookup.classList.remove("tooltip-open");
-            });
-            if (!wasOpen) {
-              alignTooltip();
-              lookup.classList.add("tooltip-open");
-            }
-          });
-          lookup.addEventListener("keydown", function (event) {
-            if (event.key === "Escape") {
-              lookup.classList.remove("tooltip-open");
-              lookup.blur();
-            }
-          });
-          append(
-            tooltip,
-            make("strong", "", concept.term),
-            make("span", "", concept.plain),
-            make("span", "term-in-build", "In this build: " + concept.in_build)
-          );
-          lookup.appendChild(tooltip);
-          fragment.appendChild(lookup);
-          cursor = match.index + match[0].length;
-        }
-        fragment.appendChild(document.createTextNode(text.slice(cursor)));
-        textNode.replaceWith(fragment);
-      });
-    }
-
-    function renderPlayground() {
-      const section = make("section", "section-wide");
-      append(
-        section,
-        make("div", "chapter-kicker", "break it on purpose"),
-        make("h2", "", LESSON.playground.title),
-        make("p", "section-intro", LESSON.playground.description)
-      );
-      const playground = make("div", "playground");
-      const controls = make("div", "scenario-buttons");
-      const stage = make("div", "scenario-stage");
-      const buttons = [];
-
-      function showScenario(scenario, activeButton) {
-        buttons.forEach(function (item) {
-          item.classList.toggle("active", item === activeButton);
-          item.setAttribute("aria-pressed", item === activeButton ? "true" : "false");
-        });
-        stage.replaceChildren();
-        const status = make("div", "scenario-status " + scenario.tone, scenario.tone);
-        const trace = make("ol", "trace");
-        scenario.trace.forEach(function (step, index) {
-          const item = make("li", "", step);
-          item.dataset.step = String(index + 1);
-          trace.appendChild(item);
-        });
-        append(
-          stage,
-          status,
-          make("h3", "", scenario.headline),
-          make("p", "", scenario.body),
-          trace
-        );
-        applyGlossaryTooltips(stage);
-      }
-
-      LESSON.playground.scenarios.forEach(function (scenario, index) {
-        const control = button("scenario-button", scenario.label);
-        control.setAttribute("aria-pressed", index === 0 ? "true" : "false");
-        control.addEventListener("click", function () {
-          showScenario(scenario, control);
-        });
-        buttons.push(control);
-        controls.appendChild(control);
-      });
-      showScenario(LESSON.playground.scenarios[0], buttons[0]);
-      append(playground, controls, stage);
-      section.appendChild(playground);
-      return section;
-    }
-
-    function renderQuiz() {
-      const section = make("section", "section-wide");
-      append(
-        section,
-        make("div", "chapter-kicker", "check your mental model"),
-        make("h2", "", "Does the system make sense?"),
-        make("p", "section-intro", "This is not a test of vocabulary. Pick the outcome that matches how your system behaves.")
-      );
-
-      const shell = make("div", "quiz-shell");
-      const card = make("div", "quiz-card");
-      const meter = make("aside", "quiz-meter");
-      meter.setAttribute("aria-label", "Quiz progress");
-      const meterTop = make("div");
-      const meterNumber = make("div", "meter-number", "0");
-      const meterLabel = make("div", "meter-label", "answers understood");
-      const meterDots = make("div", "meter-dots");
-      LESSON.quiz.forEach(function () {
-        meterDots.appendChild(make("span", "meter-dot"));
-      });
-      append(meterTop, meterNumber, meterLabel, meterDots);
-      append(meter, meterTop, make("p", "", "Every answer comes with the why."));
-
-      let current = 0;
-      let score = 0;
-
-      function renderQuestion() {
-        card.replaceChildren();
-        const item = LESSON.quiz[current];
-        append(
-          card,
-          make("div", "quiz-count", "Question " + (current + 1) + " of " + LESSON.quiz.length),
-          make("div", "quiz-question", item.question)
-        );
-        const choices = make("div", "quiz-choices");
-        item.choices.forEach(function (choice, choiceIndex) {
-          const control = button("quiz-choice", choice);
-          control.addEventListener("click", function () {
-            const isCorrect = choiceIndex === item.answer;
-            if (isCorrect) score += 1;
-            choices.querySelectorAll("button").forEach(function (choiceButton) {
-              choiceButton.disabled = true;
-            });
-            control.classList.add("selected", isCorrect ? "correct" : "try-again");
-            const feedback = make("div", "quiz-feedback");
-            append(
-              feedback,
-              make("strong", "", isCorrect ? "That model holds. " : "Try another angle. "),
-              document.createTextNode(item.explanation)
-            );
-            card.appendChild(feedback);
-            applyGlossaryTooltips(feedback);
-            const next = button("quiz-next", current === LESSON.quiz.length - 1 ? "See what stuck" : "Next question");
-            next.addEventListener("click", function () {
-              current += 1;
-              meterNumber.textContent = String(score);
-              const dot = meterDots.children[current - 1];
-              if (dot) dot.classList.add("done");
-              if (current < LESSON.quiz.length) renderQuestion();
-              else renderResult();
-            });
-            card.appendChild(next);
-            next.focus();
-          }, { once: true });
-          choices.appendChild(control);
-        });
-        card.appendChild(choices);
-        applyGlossaryTooltips(card);
-      }
-
-      function renderResult() {
-        card.replaceChildren();
-        const ratio = score / LESSON.quiz.length;
-        let headline = "The system is still new";
-        let body = "Revisit the moving diagrams, then try again. You are building the shape of it.";
-        if (ratio === 1) {
-          headline = "You can explain this system now";
-          body = "You traced every scenario using the mental model behind your build.";
-        } else if (ratio >= 0.5) {
-          headline = "You have the shape of it";
-          body = "Try the questions from another angle and watch which part owns each decision.";
-        }
-        append(
-          card,
-          make("div", "quiz-count", "Your check-in"),
-          make("div", "quiz-question", headline),
-          make("p", "", body)
-        );
-        applyGlossaryTooltips(card);
-        const restart = button("quiz-restart", "Try again");
-        restart.addEventListener("click", function () {
-          current = 0;
-          score = 0;
-          meterNumber.textContent = "0";
-          meterDots.querySelectorAll(".meter-dot").forEach(function (dot) {
-            dot.classList.remove("done");
-          });
-          renderQuestion();
-        });
-        card.appendChild(restart);
-      }
-
-      renderQuestion();
-      append(shell, card, meter);
-      section.appendChild(shell);
-      return section;
-    }
-
-    function copyText(text) {
-      if (navigator.clipboard && window.isSecureContext) {
-        return navigator.clipboard.writeText(text);
-      }
-      return new Promise(function (resolve, reject) {
-        const helper = document.createElement("textarea");
-        helper.value = text;
-        helper.style.position = "fixed";
-        helper.style.opacity = "0";
-        document.body.appendChild(helper);
-        helper.select();
-        try {
-          document.execCommand("copy") ? resolve() : reject(new Error("Copy failed"));
-        } catch (error) {
-          reject(error);
-        } finally {
-          helper.remove();
-        }
-      });
-    }
-
-    function renderQuestions() {
-      const section = make("section", "section-wide");
-      const dock = make("div", "question-dock");
-      const copy = make("div");
-      append(
-        copy,
-        make("div", "chapter-kicker", "keep asking"),
-        make("h2", "", "What still feels fuzzy?"),
-        make("p", "section-intro", "The page stays private and offline. Ask in the same chat and Teach can improve this lesson with the answer."),
-        make("div", "question-note", "")
-      );
-      const note = copy.querySelector(".question-note");
-      append(
-        note,
-        make("strong", "", "There is no hidden chatbot here."),
-        document.createTextNode(" Your question is copied so you can paste it into the chat that knows your build.")
-      );
-
-      const form = make("div");
-      const chips = make("div", "prompt-chips");
-      const input = make("textarea", "question-input");
-      input.placeholder = "For example: what would change if two people used this at the same time?";
-      input.setAttribute("aria-label", "Your follow-up question");
-      LESSON.followups.forEach(function (question) {
-        const chip = button("prompt-chip", question);
-        chip.addEventListener("click", function () {
-          input.value = question;
-          input.focus();
-        });
-        chips.appendChild(chip);
-      });
-      const copyButton = button("copy-button", "Copy question for the chat");
-      const status = make("div", "copy-status");
-      status.setAttribute("role", "status");
-      copyButton.addEventListener("click", function () {
-        const question = input.value.trim();
-        if (!question) {
-          status.textContent = "Write or choose a question first.";
-          input.focus();
-          return;
-        }
-        const teachCommand = LESSON.meta.agent === "claude" ? "/teach" : "$teach";
-        const prompt = teachCommand + " Follow-up on " + LESSON.meta.chat_context + ": " + question + " Please answer it and update my local lesson.";
-        copyText(prompt).then(function () {
-          status.textContent = "Copied. Paste it into the same chat.";
-        }).catch(function () {
-          status.textContent = "Copy did not work. Select the question and copy it manually.";
-        });
-      });
-      append(form, chips, input, copyButton, status);
-      append(dock, copy, form);
-      section.appendChild(dock);
-      return section;
-    }
-
-    function updatePageProgress() {
+    function updateProgress() {
       const max = document.documentElement.scrollHeight - window.innerHeight;
-      const value = max > 0 ? Math.min(1, window.scrollY / max) : 0;
-      document.getElementById("page-progress").style.width = (value * 100) + "%";
+      const progress = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+      document.getElementById("page-progress").style.width = progress * 100 + "%";
     }
 
     function init() {
       document.title = LESSON.meta.title + " · Teach";
-      document.getElementById("subject-pill").textContent = LESSON.meta.subject;
-      const app = document.getElementById("app");
+      document.getElementById("subject").textContent = LESSON.meta.subject;
       append(
-        app,
+        document.getElementById("app"),
         renderHero(),
-        renderChapters(),
-        renderStack(),
-        renderConcepts(),
-        renderPlayground(),
-        renderQuiz(),
-        renderQuestions()
+        renderLesson(),
+        renderTechnologies()
       );
-      applyGlossaryTooltips(app);
-      document.addEventListener("click", function (event) {
-        if (event.target.closest(".term-lookup")) return;
-        document.querySelectorAll(".term-lookup.tooltip-open").forEach(function (lookup) {
-          lookup.classList.remove("tooltip-open");
-        });
-      });
-      updatePageProgress();
-      window.addEventListener("scroll", updatePageProgress, { passive: true });
+      updateProgress();
+      window.addEventListener("scroll", updateProgress, { passive: true });
     }
 
     init();

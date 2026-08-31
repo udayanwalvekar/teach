@@ -1,74 +1,59 @@
-# Teach brand
+# Teach design system
 
 ## Idea
 
-Teach feels like a refined field notebook you can touch. It should feel curious and human, but never childish or busy. The memorable device is a clean diagram made from quiet paper modules connected by one electric-blue path.
+Teach should feel like a well-edited sheet of paper, not a marketing page. The design exists to make the explanation easy to scan and remember.
 
-The interface rewards understanding, not points. Delight comes from seeing an invisible system move.
+Use the calm clarity associated with Airbnb's product design: strong hierarchy, familiar controls, generous whitespace, and no decorative element competing with the content. Do not copy Airbnb components or branding.
 
-## Color system
+## Color
 
-| Token | Hex | Use |
-| --- | --- | --- |
-| Paper | `#F7F1E3` | Main background |
-| Paper light | `#FFFDF7` | Cards and reading surfaces |
-| Ink | `#17202A` | Titles and body copy |
-| Ink soft | `#5C6470` | Supporting copy |
-| Wire blue | `#3155E7` | Active paths, links, and focus |
-| Aha citron | `#D9F95F` | Takeaways and correct states |
-| Try coral | `#FF7968` | Broken states and useful warnings |
-| Maker teal | `#2DAA8A` | Completed steps and calm confirmation |
+- White page: `#FFFFFF`
+- Primary text: `#222222`
+- Supporting text: `#6A6A6A`
+- Rules and borders: `#DDDDDD`
+- Quiet selected background: `#F7F7F7`
 
-Use Ink for titles. Do not color individual headline words. Color belongs in the diagram, labels, rules, and physical-looking accents.
+Use black, white, and neutral gray only. Do not use accent colors, gradients, paper tints, graph grids, colored wires, or semantic celebration colors.
 
 ## Typography
 
-- Display: `Iowan Old Style`, `Palatino Linotype`, `Book Antiqua`, serif
-- Body and controls: `Avenir Next`, `Segoe UI`, sans-serif
-- Technical labels: `SFMono-Regular`, `Consolas`, monospace
+Use the native system sans-serif stack for everything. Create hierarchy with size, weight, spacing, and line length—not decorative typefaces.
 
-The serif voice says “field guide.” The humanist sans voice says “someone is explaining this beside you.” Avoid generic product-dashboard typography.
+- Title: large but editorial, never larger than needed to state the subject clearly
+- Section heading: direct and compact
+- Body: 16 to 20 pixels with comfortable line spacing
+- Labels: small, quiet, and used sparingly
 
-## Shape and texture
+## Layout
 
-- A very faint warm-paper grid on the page background
-- 1px to 2px Ink outlines, restrained shadows, and 6 to 12px corner radii
-- No rotation on diagrams, reading text, or controls
-- Numbered round markers that feel like washers or cable ports
-- One dominant interactive visual per chapter
+- Keep the reading column focused and predictable.
+- Use thin rules to separate the three parts.
+- Prefer open space over cards. Add a card only when it groups a real interaction.
+- Use small corner radii and no shadows.
+- Keep the page visible immediately; do not hide sections behind scroll-reveal effects.
+- On mobile, preserve the same order without horizontal scrolling.
 
-Do not use glassmorphism, purple gradients, floating dashboard cards, trophy icons, confetti, or decorative code rain.
+## Diagram
 
-## Diagram system
+The one useful diagram belongs in **How it works**.
 
-Diagrams are editorial, not ornamental.
-
-- Use the fewest nodes that preserve the real mechanism; usually 3 to 7.
-- Give every node one short label and one responsibility.
-- Keep one clear reading direction and avoid crossing connectors.
-- Use Paper, Ink, and soft neutral fills for the base. Reserve Wire blue for the active path and one semantic signal color when needed.
-- Put longer explanations in a selected detail panel instead of inside the diagram.
-- Use generous whitespace and consistent alignment.
-- Never add icons, arrows, or containers solely to make the diagram look more technical.
-- On mobile, stack the same sequence vertically without losing its order.
+- Show three to five steps in one direction.
+- Use black outlines on white modules.
+- Use a black fill only for the selected step.
+- Keep each label understandable without opening its detail.
+- Put the longer explanation in one quiet gray detail area.
+- Do not add decorative icons, animated wires, rotated cards, or technical-looking ornament.
 
 ## Motion
 
-- Draw the active wire as the learner advances through a flow
-- Lift clickable modules by 2 to 3px on hover
-- Reveal chapters with a short upward settle
-- Keep motion under 450ms and honor `prefers-reduced-motion`
-- Animation must explain state or hierarchy. It should not delay reading.
+Motion is optional. If used, it must respond directly to an action and finish quickly. Never animate content into visibility or make the learner wait to read.
 
 ## Voice
 
-Teach is a capable friend at the same table.
+Teach is a clear friend at the same table.
 
-- Start from “here is what you made,” not “today we will learn”
-- Short sentences and concrete examples
-- Curiosity over performance
-- Explain the reason behind a term
-- Say “try another angle” instead of “incorrect”
-- No baby talk, fake praise, corporate phrasing, or teacherly scolding
-
-The core rhythm is: what you made, why it matters, how one real action moves through it, the technical words in context, what can go wrong, then a small challenge. Use an analogy only when it makes the real mechanism easier to see.
+- Start with the builder's real problem.
+- Use short sentences and concrete verbs.
+- Explain technology only where it changes the mental model.
+- Avoid baby talk, praise, sales language, and teacherly instructions.
