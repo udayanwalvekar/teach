@@ -43,18 +43,16 @@ Teach requires Python 3.9 or newer to build and serve the local lesson.
 on macOS, Linux, or WSL, paste one command:
 
 ```sh
-curl -fsSL "https://github.com/udayanwalvekar/teach/releases/download/v0.2.1/install.sh?download=1" | sh
+curl -fsSL "https://github.com/udayanwalvekar/teach/releases/download/v0.4.0/install.sh?download=1" | sh
 ```
 
 on Windows PowerShell, paste:
 
 ```powershell
-irm "https://github.com/udayanwalvekar/teach/releases/download/v0.2.1/install.ps1?download=1" | iex
+irm "https://github.com/udayanwalvekar/teach/releases/download/v0.4.0/install.ps1?download=1" | iex
 ```
 
 the installer copies Teach to `~/.claude/skills/teach/`, the personal skill location used by Claude Code. start or restart Claude Code, finish building in a chat, and type `/teach` in that same chat.
-
-to update later, copy the current install command from this README and run it again. the installer moves the previous copy to a timestamped backup before replacing it.
 
 developers can install from a cloned repository instead:
 
@@ -69,6 +67,22 @@ on Windows PowerShell:
 git clone --depth 1 https://github.com/udayanwalvekar/teach.git
 .\teach\install-claude.ps1
 ```
+
+## update Teach
+
+### Codex
+
+Codex keeps the marketplace snapshot and the installed plugin as separate copies. refresh the marketplace, replace the installed copy, then start a new thread:
+
+```sh
+codex plugin marketplace upgrade teach
+codex plugin remove teach@teach
+codex plugin add teach@teach
+```
+
+### Claude Code
+
+copy the current Claude install command from this README and run it again. the installer detects the existing skill, moves it to a timestamped backup, and installs the current release. restart Claude Code afterward.
 
 ## teaching style
 
