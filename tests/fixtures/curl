@@ -12,7 +12,7 @@ printf '%s\n' "$url" >> "${TEACH_TEST_CURL_LOG:?}"
 prefix="https://raw.githubusercontent.com/udayanwalvekar/teach/"
 case "$url" in
   "https://api.github.com/repos/udayanwalvekar/teach/releases/latest")
-    printf '{"tag_name":"v0.6.2"}\n' > "$destination"
+    printf '{"tag_name":"v0.6.3"}\n' > "$destination"
     ;;
   "$prefix"*)
     revision_and_path=${url#"$prefix"}

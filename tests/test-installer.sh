@@ -102,14 +102,19 @@ tui_output=$(
   TERM=xterm-256color \
   sh "$repo/install.sh"
 )
-printf '%s' "$tui_first_output" | grep -F '✓ Teach installed' >/dev/null
+printf '%s' "$tui_first_output" | grep -F 'Ready.' >/dev/null
 printf '%s' "$tui_output" | grep -F 'Detecting coding agents' >/dev/null
 printf '%s' "$tui_output" | grep -F 'Installing for Codex' >/dev/null
 printf '%s' "$tui_output" | grep -F 'Installing for Claude Code' >/dev/null
 printf '%s' "$tui_output" | grep -F 'Finishing' >/dev/null
-printf '%s' "$tui_output" | grep -F '✓ Teach installed' >/dev/null
+printf '%s' "$tui_output" | grep -F '━━━━━━━━━━' >/dev/null
+printf '%s' "$tui_output" | grep -F 'teach' >/dev/null
+printf '%s' "$tui_output" | grep -F 'Install Codex' >/dev/null
+printf '%s' "$tui_output" | grep -F 'Install Claude Code' >/dev/null
+printf '%s' "$tui_output" | grep -F 'Ready.' >/dev/null
 printf '%s' "$tui_output" | grep -F 'Codex + Claude Code' >/dev/null
-printf '%s' "$tui_output" | grep -F 'Restart your coding agent, then type:' >/dev/null
+printf '%s' "$tui_output" | grep -F 'Restart your coding agent, then type' >/dev/null
+printf '%s' "$tui_output" | grep -F 'teach ↵' >/dev/null
 escape=$(printf '\033')
 printf '%s' "$tui_output" | grep -F "${escape}[?25l" >/dev/null
 printf '%s' "$tui_output" | grep -F "${escape}[?25h" >/dev/null
@@ -157,6 +162,6 @@ TERM=dumb \
 sh "$repo/install.sh" >/dev/null
 test -f "$claude_only_home/.claude/skills/teach/SKILL.md"
 grep -Fx 'https://api.github.com/repos/udayanwalvekar/teach/releases/latest' "$curl_log" >/dev/null
-grep -Fx 'https://raw.githubusercontent.com/udayanwalvekar/teach/v0.6.2/claude-files.txt' "$curl_log" >/dev/null
+grep -Fx 'https://raw.githubusercontent.com/udayanwalvekar/teach/v0.6.3/claude-files.txt' "$curl_log" >/dev/null
 
 echo "Universal installer fresh-install and update checks passed."
