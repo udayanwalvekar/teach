@@ -7,14 +7,16 @@ import hashlib
 import json
 import os
 import shutil
+import subprocess
 import sys
 import tempfile
 import urllib.parse
 import urllib.request
 from pathlib import Path, PurePosixPath
-from typing import Any, Optional
+from typing import Any, NamedTuple, Optional
 
 BOOTSTRAP_VERSION = 1
+BOOTSTRAP_API_VERSION = 1
 DEFAULT_BASE_URL = (
     "https://raw.githubusercontent.com/udayanwalvekar/teach/"
     "main/plugins/teach/skills/teach"
@@ -29,6 +31,18 @@ BUNDLED_RUNTIME = SKILL_ROOT / "runtime" / "teach.md"
 
 class RuntimeResolutionError(Exception):
     pass
+
+
+class ManifestInfo(NamedTuple):
+    files: list[tuple[str, str]]
+    digest: str
+    prompt_version: int
+
+
+class RuntimeSelection(NamedTuple):
+    path: Path
+    digest: str
+    prompt_version: int
 
 
 def debug(message: str) -> None:
@@ -102,7 +116,7 @@ def safe_relative_path(raw: object) -> str:
     return path.as_posix()
 
 
-def parse_manifest(data: bytes) -> tuple[dict[str, Any], list[tuple[str, str]], str]:
+def parse_manifest(data: bytes) -> ManifestInfo:
     try:
         manifest = json.loads(data.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
@@ -116,8 +130,10 @@ def parse_manifest(data: bytes) -> tuple[dict[str, Any], list[tuple[str, str]], 
     minimum = manifest.get("minimum_bootstrap_version")
     if type(minimum) is not int or minimum < 1 or minimum > BOOTSTRAP_VERSION:
         raise RuntimeResolutionError("prompt update requires a newer Teach installer")
+    if manifest.get("bootstrap_api_version") != BOOTSTRAP_API_VERSION:
+        raise RuntimeResolutionError("prompt update uses an incompatible bootstrap API")
     version = manifest.get("prompt_version")
-    if not isinstance(version, str) or not version or len(version) > 80:
+    if type(version) is not int or version < 1:
         raise RuntimeResolutionError("prompt manifest has an invalid version")
     raw_files = manifest.get("files")
     if not isinstance(raw_files, list) or not raw_files or len(raw_files) > 50:
@@ -151,7 +167,7 @@ def parse_manifest(data: bytes) -> tuple[dict[str, Any], list[tuple[str, str]], 
 
     canonical = "\n".join(f"{path}\0{digest}" for path, digest in files).encode("utf-8")
     bundle_digest = hashlib.sha256(canonical).hexdigest()
-    return manifest, files, bundle_digest
+    return ManifestInfo(files, bundle_digest, version)
 
 
 def verify_bundle(root: Path, files: list[tuple[str, str]]) -> bool:
@@ -182,15 +198,15 @@ def file_url(base_url: str, relative_path: str) -> str:
 def install_remote_bundle(
     base_url: str,
     manifest_data: bytes,
-    files: list[tuple[str, str]],
-    bundle_digest: str,
+    manifest: ManifestInfo,
     timeout: float,
     root: Path,
-) -> Path:
+) -> RuntimeSelection:
     bundles = root / "bundles"
-    destination = bundles / bundle_digest
-    if verify_bundle(destination, files):
-        return destination / "runtime" / "teach.md"
+    destination = bundles / manifest.digest
+    runtime_path = destination / "runtime" / "teach.md"
+    if verify_bundle(destination, manifest.files):
+        return RuntimeSelection(runtime_path, manifest.digest, manifest.prompt_version)
 
     bundles.mkdir(parents=True, exist_ok=True)
     if destination.is_symlink() or destination.is_file():
@@ -200,7 +216,7 @@ def install_remote_bundle(
     staging = Path(tempfile.mkdtemp(prefix=".download-", dir=bundles))
     try:
         total_bytes = 0
-        for relative_path, expected_digest in files:
+        for relative_path, expected_digest in manifest.files:
             data = fetch(file_url(base_url, relative_path), timeout, MAX_FILE_BYTES)
             total_bytes += len(data)
             if total_bytes > MAX_BUNDLE_BYTES:
@@ -218,95 +234,136 @@ def install_remote_bundle(
         try:
             staging.replace(destination)
         except OSError:
-            if not verify_bundle(destination, files):
+            if not verify_bundle(destination, manifest.files):
                 raise
-        return destination / "runtime" / "teach.md"
+        return RuntimeSelection(runtime_path, manifest.digest, manifest.prompt_version)
     finally:
         if staging.exists():
             shutil.rmtree(staging, ignore_errors=True)
 
 
-def cached_runtime(root: Path) -> Optional[Path]:
+def cached_runtime(root: Path) -> Optional[RuntimeSelection]:
     bundles = root / "bundles"
     if not bundles.is_dir():
         return None
     try:
-        candidates = sorted(
-            (
-                path
-                for path in bundles.iterdir()
-                if path.is_dir() and not path.name.startswith(".")
-            ),
-            key=lambda path: path.stat().st_mtime,
-            reverse=True,
-        )
+        candidates = [
+            path
+            for path in bundles.iterdir()
+            if path.is_dir() and not path.is_symlink() and not path.name.startswith(".")
+        ]
     except OSError:
         return None
+    selections: dict[int, RuntimeSelection] = {}
+    ambiguous_versions: set[int] = set()
     for candidate in candidates:
         manifest_path = candidate / "manifest.json"
         try:
-            _, files, _ = parse_manifest(manifest_path.read_bytes())
+            manifest = parse_manifest(manifest_path.read_bytes())
         except (OSError, RuntimeResolutionError):
             continue
-        if verify_bundle(candidate, files):
-            return candidate / "runtime" / "teach.md"
-    return None
+        if candidate.name != manifest.digest or not verify_bundle(
+            candidate, manifest.files
+        ):
+            continue
+        selection = RuntimeSelection(
+            candidate / "runtime" / "teach.md",
+            manifest.digest,
+            manifest.prompt_version,
+        )
+        existing = selections.get(manifest.prompt_version)
+        if existing is not None and existing.digest != selection.digest:
+            ambiguous_versions.add(manifest.prompt_version)
+            selections.pop(manifest.prompt_version, None)
+        elif manifest.prompt_version not in ambiguous_versions:
+            selections[manifest.prompt_version] = selection
+    if not selections:
+        return None
+    return selections[max(selections)]
 
 
-def bundled_runtime() -> Path:
+def bundled_runtime() -> RuntimeSelection:
     try:
-        _, files, _ = parse_manifest(BUNDLED_MANIFEST.read_bytes())
+        manifest = parse_manifest(BUNDLED_MANIFEST.read_bytes())
     except OSError as exc:
         raise RuntimeResolutionError(
             "bundled Teach prompt manifest is missing"
         ) from exc
-    if not verify_bundle(SKILL_ROOT, files):
+    if not verify_bundle(SKILL_ROOT, manifest.files):
         raise RuntimeResolutionError("bundled Teach prompt did not pass verification")
-    return BUNDLED_RUNTIME
+    return RuntimeSelection(BUNDLED_RUNTIME, manifest.digest, manifest.prompt_version)
 
 
-def bundled_digest() -> Optional[str]:
-    try:
-        _, files, digest = parse_manifest(BUNDLED_MANIFEST.read_bytes())
-    except (OSError, RuntimeResolutionError):
-        return None
-    return digest if verify_bundle(SKILL_ROOT, files) else None
+def local_runtime(root: Path) -> RuntimeSelection:
+    bundled = bundled_runtime()
+    cached = cached_runtime(root)
+    if cached is not None and cached.prompt_version > bundled.prompt_version:
+        return cached
+    return bundled
+
+
+def refresh_remote(root: Path, timeout: float) -> RuntimeSelection:
+    current = local_runtime(root)
+    base_url = os.environ.get("TEACH_UPDATE_BASE_URL", DEFAULT_BASE_URL)
+    manifest_data = fetch(manifest_url(base_url), timeout, MAX_MANIFEST_BYTES)
+    remote = parse_manifest(manifest_data)
+    if remote.prompt_version < current.prompt_version:
+        debug("remote prompt is older than the current verified prompt")
+        return current
+    if remote.prompt_version == current.prompt_version:
+        if remote.digest != current.digest:
+            raise RuntimeResolutionError(
+                "prompt content changed without a prompt-version increase"
+            )
+        debug("current prompt is already up to date")
+        return current
+    return install_remote_bundle(base_url, manifest_data, remote, timeout, root)
 
 
 def resolve() -> Path:
     if updates_disabled():
         debug("updates disabled; using bundled prompt")
-        return bundled_runtime()
+        return bundled_runtime().path
 
     root = cache_root()
-    base_url = os.environ.get("TEACH_UPDATE_BASE_URL", DEFAULT_BASE_URL)
+    fallback = local_runtime(root)
     try:
-        timeout = timeout_seconds()
-        manifest_data = fetch(manifest_url(base_url), timeout, MAX_MANIFEST_BYTES)
-        _, files, bundle_digest = parse_manifest(manifest_data)
-        if bundle_digest == bundled_digest():
-            debug("installed prompt is current")
-            return BUNDLED_RUNTIME
-        path = install_remote_bundle(
-            base_url, manifest_data, files, bundle_digest, timeout, root
+        result = subprocess.run(
+            [sys.executable, str(Path(__file__).resolve()), "--refresh"],
+            capture_output=True,
+            check=False,
+            text=True,
+            timeout=timeout_seconds(),
         )
-        debug(f"using verified prompt {path}")
-        return path
+        if result.returncode != 0:
+            debug(result.stderr.strip() or "prompt refresh failed")
+            return fallback.path
+        selected = local_runtime(root)
+        debug(f"using verified prompt {selected.path}")
+        return selected.path
+    except subprocess.TimeoutExpired:
+        debug("prompt refresh exceeded the total update deadline")
+        return fallback.path
     except Exception as exc:  # noqa: BLE001 - update failures must not block Teach.
         debug(str(exc))
-        cached = cached_runtime(root)
-        if cached is not None:
-            debug(f"using last-known-good prompt {cached}")
-            return cached
-        return bundled_runtime()
+        return fallback.path
 
 
 def main() -> int:
+    refresh_child = sys.argv[1:] == ["--refresh"]
     try:
-        print(resolve().resolve())
+        if refresh_child:
+            print(refresh_remote(cache_root(), timeout_seconds()).path.resolve())
+        elif not sys.argv[1:]:
+            print(resolve().resolve())
+        else:
+            raise RuntimeResolutionError("unknown resolver arguments")
         return 0
-    except RuntimeResolutionError as exc:
-        print(f"Teach could not load its prompt: {exc}", file=sys.stderr)
+    except Exception as exc:  # noqa: BLE001 - child refresh reports failure to parent.
+        if refresh_child:
+            debug(str(exc))
+        else:
+            print(f"Teach could not load its prompt: {exc}", file=sys.stderr)
         return 1
 
 

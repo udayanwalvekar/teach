@@ -10,6 +10,8 @@ from pathlib import Path
 
 SKILL_ROOT = Path(__file__).resolve().parent.parent
 MANIFEST_PATH = SKILL_ROOT / "runtime" / "manifest.json"
+PROMPT_VERSION = 1
+BOOTSTRAP_API_VERSION = 1
 
 
 def prompt_files() -> list[Path]:
@@ -18,7 +20,7 @@ def prompt_files() -> list[Path]:
     return sorted(files, key=lambda path: path.relative_to(SKILL_ROOT).as_posix())
 
 
-def build_manifest() -> dict[str, object]:
+def build_manifest(prompt_version: int) -> dict[str, object]:
     files = []
     for path in prompt_files():
         files.append(
@@ -29,14 +31,15 @@ def build_manifest() -> dict[str, object]:
         )
     return {
         "schema_version": 1,
-        "prompt_version": "2026.08.31.1",
+        "prompt_version": prompt_version,
         "minimum_bootstrap_version": 1,
+        "bootstrap_api_version": BOOTSTRAP_API_VERSION,
         "files": files,
     }
 
 
-def serialized_manifest() -> str:
-    return json.dumps(build_manifest(), indent=2, sort_keys=False) + "\n"
+def serialized_manifest(prompt_version: int) -> str:
+    return json.dumps(build_manifest(prompt_version), indent=2, sort_keys=False) + "\n"
 
 
 def main() -> int:
@@ -46,8 +49,16 @@ def main() -> int:
         action="store_true",
         help="fail if runtime/manifest.json does not match the prompt files",
     )
+    parser.add_argument(
+        "--prompt-version",
+        type=int,
+        default=PROMPT_VERSION,
+        help="monotonic integer version for this prompt bundle",
+    )
     args = parser.parse_args()
-    expected = serialized_manifest()
+    if args.prompt_version < 1:
+        parser.error("--prompt-version must be at least 1")
+    expected = serialized_manifest(args.prompt_version)
     if args.check:
         actual = (
             MANIFEST_PATH.read_text(encoding="utf-8") if MANIFEST_PATH.exists() else ""
