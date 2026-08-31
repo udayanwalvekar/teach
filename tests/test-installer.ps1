@@ -126,9 +126,8 @@ try {
     throw "Claude update should create exactly one backup."
   }
 
-  $Revision = (& git -C $Repo rev-parse HEAD).Trim()
-  if (-not (Select-String -Quiet -SimpleMatch "https://raw.githubusercontent.com/udayanwalvekar/teach/$Revision/claude-files.txt" $CurlLog)) {
-    throw "Claude files were not sourced from the Codex marketplace revision."
+  if ((Get-Item $CurlLog).Length -ne 0) {
+    throw "Combined install should reuse the refreshed local Codex marketplace for Claude."
   }
 
   $env:TEACH_TEST_FAIL_ACTION = "plugin marketplace upgrade teach"
