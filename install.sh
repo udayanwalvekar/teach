@@ -9,6 +9,23 @@ log_file="$download_root/install.log"
 install_pid=""
 cursor_hidden=false
 worker_process=false
+tui_rendered=false
+tui_line_count=11
+
+clear_tui() {
+  if [ "$tui_rendered" != true ]; then
+    return
+  fi
+
+  printf '\033[%sA' "$tui_line_count"
+  line_number=1
+  while [ "$line_number" -le "$tui_line_count" ]; do
+    printf '\033[2K\n'
+    line_number=$((line_number + 1))
+  done
+  printf '\033[%sA' "$tui_line_count"
+  tui_rendered=false
+}
 
 cleanup() {
   status=$?
@@ -21,6 +38,7 @@ cleanup() {
     wait "$install_pid" 2>/dev/null
   fi
   if [ "$cursor_hidden" = true ]; then
+    clear_tui
     printf '\033[?25h'
   fi
   rm -rf "$download_root"
@@ -204,12 +222,82 @@ perform_install() {
 show_success() {
   installed_for=$(cat "$result_file")
   if [ "$tui_enabled" = true ]; then
-    printf '\n  \033[1m✓ Teach installed\033[0m\n'
-    printf '    %s\n\n' "$installed_for"
-    printf '    Restart your coding agent, then type: \033[1mteach\033[0m\n\n'
+    render_tui "Complete" "✓"
   else
     printf 'Teach is installed for %s. Restart your coding agent, then type: teach\n' "$installed_for"
   fi
+}
+
+render_tui_step() {
+  step_number=$1
+  phase_number=$2
+  frame=$3
+  label=$4
+  available=${5:-true}
+
+  if [ "$available" = false ] && [ "$phase_number" -gt 1 ]; then
+    printf '\033[2K  \033[2m–  %-31s not detected\033[0m\n' "$label"
+  elif [ "$phase_number" -gt "$step_number" ]; then
+    printf '\033[2K  \033[1m✓\033[0m  %s\n' "$label"
+  elif [ "$phase_number" -eq "$step_number" ]; then
+    printf '\033[2K  \033[1m%s\033[0m  %s\n' "$frame" "$label"
+  else
+    printf '\033[2K  \033[2m·  %s\033[0m\n' "$label"
+  fi
+}
+
+render_tui() {
+  phase=$1
+  frame=$2
+  installed_for=""
+  codex_available=true
+  claude_available=true
+
+  if [ -s "$result_file" ]; then
+    installed_for=$(cat "$result_file")
+    case "$installed_for" in
+      Codex) claude_available=false ;;
+      'Claude Code') codex_available=false ;;
+    esac
+  fi
+
+  case "$phase" in
+    'Detecting coding agents') phase_number=1 ;;
+    'Installing for Codex') phase_number=2 ;;
+    'Installing for Claude Code') phase_number=3 ;;
+    Finishing) phase_number=4 ;;
+    Complete) phase_number=5 ;;
+    *) phase_number=0 ;;
+  esac
+
+  if [ "$tui_rendered" = true ]; then
+    printf '\033[%sA' "$tui_line_count"
+  fi
+
+  printf '\033[2K\n'
+  printf '\033[2K  \033[1m━━━━━━━━━━\033[0m\n'
+  printf '\033[2K      ┃  \033[1mteach\033[0m\n'
+  printf '\033[2K      ┃  \033[2msetup\033[0m\n'
+  printf '\033[2K\n'
+  if [ -n "$installed_for" ]; then
+    if [ "$phase_number" -gt 1 ]; then
+      printf '\033[2K  \033[1m✓\033[0m  %-31s \033[2m%s\033[0m\n' 'Detect coding agents' "$installed_for"
+    else
+      render_tui_step 1 "$phase_number" "$frame" 'Detect coding agents'
+    fi
+  else
+    render_tui_step 1 "$phase_number" "$frame" 'Detect coding agents'
+  fi
+  render_tui_step 2 "$phase_number" "$frame" 'Install Codex' "$codex_available"
+  render_tui_step 3 "$phase_number" "$frame" 'Install Claude Code' "$claude_available"
+  render_tui_step 4 "$phase_number" "$frame" 'Finish'
+  printf '\033[2K\n'
+  if [ "$phase" = Complete ]; then
+    printf '\033[2K  \033[1mReady.\033[0m Restart your coding agent, then type  \033[1mteach ↵\033[0m\n'
+  else
+    printf '\033[2K  \033[2mInstalling Teach…\033[0m\n'
+  fi
+  tui_rendered=true
 }
 
 if [ "$tui_enabled" = true ]; then
@@ -229,7 +317,7 @@ if [ "$tui_enabled" = true ]; then
       5) frame='⠴' ;; 6) frame='⠦' ;; 7) frame='⠧' ;; 8) frame='⠇' ;; *) frame='⠏' ;;
     esac
     frame_index=$(((frame_index + 1) % 10))
-    printf '\r\033[2K  %s  %s' "$frame" "$current_status"
+    render_tui "$current_status" "$frame"
     sleep "${TEACH_SPINNER_INTERVAL:-0.08}"
   done
 
@@ -239,15 +327,18 @@ if [ "$tui_enabled" = true ]; then
     install_status=$?
   fi
   install_pid=""
-  printf '\r\033[2K\033[?25h'
-  cursor_hidden=false
 
   if [ "$install_status" -ne 0 ]; then
+    clear_tui
+    printf '\033[?25h'
+    cursor_hidden=false
     printf '\n  Teach could not be installed.\n\n' >&2
     cat "$log_file" >&2
     exit "$install_status"
   fi
   show_success
+  printf '\033[?25h'
+  cursor_hidden=false
 else
   perform_install
   show_success

@@ -102,14 +102,17 @@ tui_output=$(
   TERM=xterm-256color \
   sh "$repo/install.sh"
 )
-printf '%s' "$tui_first_output" | grep -F '✓ Teach installed' >/dev/null
-printf '%s' "$tui_output" | grep -F 'Detecting coding agents' >/dev/null
-printf '%s' "$tui_output" | grep -F 'Installing for Codex' >/dev/null
-printf '%s' "$tui_output" | grep -F 'Installing for Claude Code' >/dev/null
-printf '%s' "$tui_output" | grep -F 'Finishing' >/dev/null
-printf '%s' "$tui_output" | grep -F '✓ Teach installed' >/dev/null
+printf '%s' "$tui_first_output" | grep -F 'Ready.' >/dev/null
+printf '%s' "$tui_output" | grep -F '━━━━━━━━━━' >/dev/null
+printf '%s' "$tui_output" | grep -F 'teach' >/dev/null
+printf '%s' "$tui_output" | grep -F 'Detect coding agents' >/dev/null
+printf '%s' "$tui_output" | grep -F 'Install Codex' >/dev/null
+printf '%s' "$tui_output" | grep -F 'Install Claude Code' >/dev/null
+printf '%s' "$tui_output" | grep -F 'Finish' >/dev/null
+printf '%s' "$tui_output" | grep -F 'Ready.' >/dev/null
 printf '%s' "$tui_output" | grep -F 'Codex + Claude Code' >/dev/null
-printf '%s' "$tui_output" | grep -F 'Restart your coding agent, then type:' >/dev/null
+printf '%s' "$tui_output" | grep -F 'Restart your coding agent, then type' >/dev/null
+printf '%s' "$tui_output" | grep -F 'teach ↵' >/dev/null
 escape=$(printf '\033')
 printf '%s' "$tui_output" | grep -F "${escape}[?25l" >/dev/null
 printf '%s' "$tui_output" | grep -F "${escape}[?25h" >/dev/null
@@ -144,6 +147,40 @@ printf '%s' "$failure_output" | grep -F 'Teach could not be installed.' >/dev/nu
 printf '%s' "$failure_output" | grep -F 'Simulated Codex failure' >/dev/null
 printf '%s' "$failure_output" | grep -F "${escape}[?25h" >/dev/null
 
+interrupt_home="$test_root/interrupt-home"
+interrupt_state="$test_root/interrupt-state"
+interrupt_output="$test_root/interrupt-output"
+mkdir -p "$interrupt_home" "$interrupt_state"
+HOME="$interrupt_home" \
+PATH="$repo/tests/fixtures:$PATH" \
+TEACH_TEST_CODEX_STATE="$interrupt_state" \
+TEACH_TEST_CURL_LOG="$curl_log" \
+TEACH_TEST_REPO="$repo" \
+TEACH_INSTALL_CODEX=1 \
+TEACH_INSTALL_CLAUDE=1 \
+TEACH_FORCE_TUI=1 \
+TEACH_TEST_PHASE_DELAY=2 \
+TEACH_SPINNER_INTERVAL=0.02 \
+TERM=xterm-256color \
+sh "$repo/install.sh" > "$interrupt_output" 2>&1 &
+interrupt_pid=$!
+sleep 0.15
+kill -TERM "$interrupt_pid"
+if wait "$interrupt_pid"; then
+  echo "Interrupted installer returned success." >&2
+  exit 1
+fi
+python3 - "$interrupt_output" <<'PY'
+from pathlib import Path
+import sys
+
+output = Path(sys.argv[1]).read_bytes()
+escape = b"\x1b"
+clear_panel = escape + b"[11A" + (escape + b"[2K\n") * 11 + escape + b"[11A" + escape + b"[?25h"
+if not output.endswith(clear_panel):
+    raise SystemExit("Interrupted installer did not clear the TUI and restore the cursor.")
+PY
+
 claude_only_home="$test_root/claude-only-home"
 mkdir -p "$claude_only_home"
 : > "$curl_log"
@@ -157,6 +194,6 @@ TERM=dumb \
 sh "$repo/install.sh" >/dev/null
 test -f "$claude_only_home/.claude/skills/teach/SKILL.md"
 grep -Fx 'https://api.github.com/repos/udayanwalvekar/teach/releases/latest' "$curl_log" >/dev/null
-grep -Fx 'https://raw.githubusercontent.com/udayanwalvekar/teach/v0.6.2/claude-files.txt' "$curl_log" >/dev/null
+grep -Fx 'https://raw.githubusercontent.com/udayanwalvekar/teach/v0.6.3/claude-files.txt' "$curl_log" >/dev/null
 
 echo "Universal installer fresh-install and update checks passed."

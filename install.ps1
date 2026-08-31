@@ -230,11 +230,92 @@ function Test-TeachInteractiveTerminal {
     return $false
   }
   try {
-    return -not [Console]::IsOutputRedirected
+    if ([Console]::IsOutputRedirected) {
+      return $false
+    }
+    $VirtualTerminalProperty = $Host.UI.PSObject.Properties["SupportsVirtualTerminal"]
+    return $null -ne $VirtualTerminalProperty -and [bool]$Host.UI.SupportsVirtualTerminal
   }
   catch {
     return $false
   }
+}
+
+function Write-TeachTuiStep {
+  param(
+    [Parameter(Mandatory = $true)][int]$StepNumber,
+    [Parameter(Mandatory = $true)][int]$PhaseNumber,
+    [Parameter(Mandatory = $true)][string]$Frame,
+    [Parameter(Mandatory = $true)][string]$Label,
+    [bool]$Available = $true
+  )
+
+  $Esc = [char]27
+  if (-not $Available -and $PhaseNumber -gt 1) {
+    Write-Host "$Esc[2K  $Esc[2m–  $($Label.PadRight(31)) not detected$Esc[0m"
+  } elseif ($PhaseNumber -gt $StepNumber) {
+    Write-Host "$Esc[2K  $Esc[1m✓$Esc[0m  $Label"
+  } elseif ($PhaseNumber -eq $StepNumber) {
+    Write-Host "$Esc[2K  $Esc[1m$Frame$Esc[0m  $Label"
+  } else {
+    Write-Host "$Esc[2K  $Esc[2m·  $Label$Esc[0m"
+  }
+}
+
+function Write-TeachTui {
+  param(
+    [Parameter(Mandatory = $true)][string]$Phase,
+    [Parameter(Mandatory = $true)][string]$Frame,
+    [string]$InstalledFor = "",
+    [switch]$HasRendered
+  )
+
+  $Esc = [char]27
+  $PhaseNumber = switch ($Phase) {
+    "Detecting coding agents" { 1 }
+    "Installing for Codex" { 2 }
+    "Installing for Claude Code" { 3 }
+    "Finishing" { 4 }
+    "Complete" { 5 }
+    default { 0 }
+  }
+  $CodexAvailable = $InstalledFor -ne "Claude Code"
+  $ClaudeAvailable = $InstalledFor -ne "Codex"
+
+  if ($HasRendered) {
+    Write-Host "$Esc[11A" -NoNewline
+  }
+
+  Write-Host "$Esc[2K"
+  Write-Host "$Esc[2K  $Esc[1m━━━━━━━━━━$Esc[0m"
+  Write-Host "$Esc[2K      ┃  $Esc[1mteach$Esc[0m"
+  Write-Host "$Esc[2K      ┃  $Esc[2msetup$Esc[0m"
+  Write-Host "$Esc[2K"
+  if ($InstalledFor -and $PhaseNumber -gt 1) {
+    Write-Host "$Esc[2K  $Esc[1m✓$Esc[0m  $('Detect coding agents'.PadRight(31)) $Esc[2m$InstalledFor$Esc[0m"
+  } else {
+    Write-TeachTuiStep -StepNumber 1 -PhaseNumber $PhaseNumber -Frame $Frame -Label "Detect coding agents"
+  }
+  Write-TeachTuiStep -StepNumber 2 -PhaseNumber $PhaseNumber -Frame $Frame -Label "Install Codex" -Available $CodexAvailable
+  Write-TeachTuiStep -StepNumber 3 -PhaseNumber $PhaseNumber -Frame $Frame -Label "Install Claude Code" -Available $ClaudeAvailable
+  Write-TeachTuiStep -StepNumber 4 -PhaseNumber $PhaseNumber -Frame $Frame -Label "Finish"
+  Write-Host "$Esc[2K"
+  if ($Phase -eq "Complete") {
+    Write-Host "$Esc[2K  $Esc[1mReady.$Esc[0m Restart your coding agent, then type  $Esc[1mteach ↵$Esc[0m"
+  } else {
+    Write-Host "$Esc[2K  $Esc[2mInstalling Teach…$Esc[0m"
+  }
+}
+
+function Clear-TeachTui {
+  param([switch]$HasRendered)
+  if (-not $HasRendered) { return }
+  $Esc = [char]27
+  Write-Host "$Esc[11A" -NoNewline
+  foreach ($Line in 1..11) {
+    Write-Host "$Esc[2K"
+  }
+  Write-Host "$Esc[11A" -NoNewline
 }
 
 if (-not (Test-TeachInteractiveTerminal)) {
@@ -251,6 +332,7 @@ $PreviousResultPath = $env:TEACH_POWERSHELL_RESULT_PATH
 $PowerShell = $null
 $AsyncResult = $null
 $Escape = [char]27
+$TuiRendered = $false
 
 try {
   New-Item -ItemType Directory -Path $ProgressRoot | Out-Null
@@ -269,9 +351,13 @@ try {
   while (-not $AsyncResult.IsCompleted) {
     $Status = try { [IO.File]::ReadAllText($StatusPath) } catch { "Starting Teach" }
     if (-not $Status) { $Status = "Starting Teach" }
+    $InstalledFor = if (Test-Path -LiteralPath $ResultPath) {
+      try { [IO.File]::ReadAllText($ResultPath) } catch { "" }
+    } else { "" }
     $Frame = $Frames[$FrameIndex % $Frames.Count]
     $FrameIndex++
-    Write-Host "`r$(' ' * 80)`r  $Frame  $Status" -NoNewline -ForegroundColor White
+    Write-TeachTui -Phase $Status -Frame $Frame -InstalledFor $InstalledFor -HasRendered:$TuiRendered
+    $TuiRendered = $true
     Start-Sleep -Milliseconds 80
   }
 
@@ -282,17 +368,13 @@ try {
   }
 
   $InstalledFor = [IO.File]::ReadAllText($ResultPath)
-  Write-Host "`r$(' ' * 80)`r$Escape[?25h" -NoNewline
-  Write-Host ""
-  Write-Host "  ✓ Teach installed" -ForegroundColor White
-  Write-Host "    $InstalledFor" -ForegroundColor Gray
-  Write-Host ""
-  Write-Host "    Restart your coding agent, then type: " -NoNewline -ForegroundColor Gray
-  Write-Host "teach" -ForegroundColor White
-  Write-Host ""
+  Write-TeachTui -Phase "Complete" -Frame "✓" -InstalledFor $InstalledFor -HasRendered:$TuiRendered
+  $TuiRendered = $true
+  Write-Host "$Escape[?25h" -NoNewline
 }
 catch {
-  Write-Host "`r$(' ' * 80)`r$Escape[?25h" -NoNewline
+  Clear-TeachTui -HasRendered:$TuiRendered
+  Write-Host "$Escape[?25h" -NoNewline
   throw "Teach could not be installed.`n$($_.Exception.Message)"
 }
 finally {
