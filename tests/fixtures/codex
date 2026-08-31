@@ -6,6 +6,11 @@ state=${TEACH_TEST_CODEX_STATE:?}
 mkdir -p "$state"
 printf '%s\n' "$*" >> "$state/actions"
 
+if [ -n "${TEACH_TEST_FAIL_ACTION:-}" ] && [ "$*" = "$TEACH_TEST_FAIL_ACTION" ]; then
+  echo "Simulated Codex failure: $*" >&2
+  exit 1
+fi
+
 case "$*" in
   "plugin marketplace list --json")
     if [ -f "$state/marketplace" ]; then

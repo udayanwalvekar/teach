@@ -71,6 +71,62 @@ fi
 backup_count=$(find "$test_home/.claude/skills" -maxdepth 1 -type d -name 'teach.backup-*' | wc -l | tr -d ' ')
 test "$backup_count" -eq 1
 
+tui_home="$test_root/tui-home"
+tui_state="$test_root/tui-state"
+mkdir -p "$tui_home" "$tui_state"
+tui_output=$(
+  HOME="$tui_home" \
+  PATH="$repo/tests/fixtures:$PATH" \
+  TEACH_TEST_CODEX_STATE="$tui_state" \
+  TEACH_TEST_CURL_LOG="$curl_log" \
+  TEACH_TEST_REPO="$repo" \
+  TEACH_INSTALL_CODEX=1 \
+  TEACH_INSTALL_CLAUDE=1 \
+  TEACH_FORCE_TUI=1 \
+  TEACH_TEST_PHASE_DELAY=0.08 \
+  TEACH_SPINNER_INTERVAL=0.02 \
+  TERM=xterm-256color \
+  sh "$repo/install.sh"
+)
+printf '%s' "$tui_output" | grep -F 'Detecting coding agents' >/dev/null
+printf '%s' "$tui_output" | grep -F 'Installing for Codex' >/dev/null
+printf '%s' "$tui_output" | grep -F 'Installing for Claude Code' >/dev/null
+printf '%s' "$tui_output" | grep -F 'Finishing' >/dev/null
+printf '%s' "$tui_output" | grep -F '✓ Teach installed' >/dev/null
+printf '%s' "$tui_output" | grep -F 'Codex + Claude Code' >/dev/null
+printf '%s' "$tui_output" | grep -F 'Restart your coding agent, then type:' >/dev/null
+escape=$(printf '\033')
+printf '%s' "$tui_output" | grep -F "${escape}[?25l" >/dev/null
+printf '%s' "$tui_output" | grep -F "${escape}[?25h" >/dev/null
+if printf '%s' "$tui_output" | grep -E 'TEACH IS READY|you built it|[┌┐└┘╭╮╰╯]|Backed up|\.backup-' >/dev/null; then
+  echo "Interactive installer still contains the old box, tagline, or internal backup path." >&2
+  exit 1
+fi
+
+failure_home="$test_root/failure-home"
+failure_state="$test_root/failure-state"
+mkdir -p "$failure_home" "$failure_state"
+if failure_output=$(
+  HOME="$failure_home" \
+  PATH="$repo/tests/fixtures:$PATH" \
+  TEACH_TEST_CODEX_STATE="$failure_state" \
+  TEACH_TEST_CURL_LOG="$curl_log" \
+  TEACH_TEST_REPO="$repo" \
+  TEACH_INSTALL_CODEX=1 \
+  TEACH_INSTALL_CLAUDE=0 \
+  TEACH_FORCE_TUI=1 \
+  TEACH_TEST_FAIL_ACTION='plugin marketplace add udayanwalvekar/teach' \
+  TEACH_SPINNER_INTERVAL=0.02 \
+  TERM=xterm-256color \
+  sh "$repo/install.sh" 2>&1
+); then
+  echo "Interactive installer did not propagate a Codex installation failure." >&2
+  exit 1
+fi
+printf '%s' "$failure_output" | grep -F 'Teach could not be installed.' >/dev/null
+printf '%s' "$failure_output" | grep -F 'Simulated Codex failure' >/dev/null
+printf '%s' "$failure_output" | grep -F "${escape}[?25h" >/dev/null
+
 claude_only_home="$test_root/claude-only-home"
 mkdir -p "$claude_only_home"
 : > "$curl_log"
@@ -84,6 +140,6 @@ TERM=dumb \
 sh "$repo/install.sh" >/dev/null
 test -f "$claude_only_home/.claude/skills/teach/SKILL.md"
 grep -Fx 'https://api.github.com/repos/udayanwalvekar/teach/releases/latest' "$curl_log" >/dev/null
-grep -Fx 'https://raw.githubusercontent.com/udayanwalvekar/teach/v0.6.1/claude-files.txt' "$curl_log" >/dev/null
+grep -Fx 'https://raw.githubusercontent.com/udayanwalvekar/teach/v0.6.2/claude-files.txt' "$curl_log" >/dev/null
 
 echo "Universal installer fresh-install and update checks passed."

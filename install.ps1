@@ -33,32 +33,65 @@ function Assert-TeachCommandSucceeded {
   }
 }
 
+function Test-TeachInteractiveTerminal {
+  if (-not [Environment]::UserInteractive -or $env:NO_COLOR) {
+    return $false
+  }
+  try {
+    return -not [Console]::IsOutputRedirected
+  }
+  catch {
+    return $false
+  }
+}
+
+$TeachInteractive = Test-TeachInteractiveTerminal
+$TeachFrameIndex = 0
+$TeachFrames = @("⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏")
+
+function Set-TeachStatus {
+  param([Parameter(Mandatory = $true)][string]$Message)
+  if ($TeachInteractive) {
+    $Frame = $TeachFrames[$TeachFrameIndex % $TeachFrames.Count]
+    $script:TeachFrameIndex++
+    Write-Host "`r$(' ' * 72)`r  $Frame  $Message" -NoNewline -ForegroundColor White
+  } else {
+    Write-Output "$Message..."
+  }
+}
+
+function Complete-TeachStatus {
+  if ($TeachInteractive) {
+    Write-Host "`r$(' ' * 72)`r" -NoNewline
+  }
+}
+
 function Show-TeachReady {
-  if ($env:NO_COLOR) {
-    Write-Output "Teach is ready. Restart your coding agent, return to the build chat, and type: teach"
+  $InstalledFor = if ($CodexDetected -and $ClaudeDetected) {
+    "Codex + Claude Code"
+  } elseif ($CodexDetected) {
+    "Codex"
+  } else {
+    "Claude Code"
+  }
+
+  Complete-TeachStatus
+  if (-not $TeachInteractive) {
+    Write-Output "Teach is installed for $InstalledFor. Restart your coding agent, then type: teach"
     return
   }
 
   Write-Host ""
-  foreach ($Frame in @(".", "..", "...", "o..", "oo.", "ooo")) {
-    Write-Host "`r  $Frame  putting Teach in the right place" -NoNewline -ForegroundColor DarkGray
-    Start-Sleep -Milliseconds 80
-  }
-  Write-Host "`r$(' ' * 48)`r" -NoNewline
+  Write-Host "  ✓ Teach installed" -ForegroundColor White
+  Write-Host "    $InstalledFor" -ForegroundColor Gray
   Write-Host ""
-  Write-Host "  +--------------------------------------+" -ForegroundColor DarkGray
-  Write-Host "  |  TEACH IS READY                      |" -ForegroundColor White
-  Write-Host "  |  you built it. now understand it.    |" -ForegroundColor Gray
-  Write-Host "  +--------------------------------------+" -ForegroundColor DarkGray
-  Write-Host ""
-  Write-Host "  Restart your coding agent. In the build chat, type:" -ForegroundColor DarkGray
-  Write-Host ""
-  Write-Host "      teach" -ForegroundColor White
+  Write-Host "    Restart your coding agent, then type: " -NoNewline -ForegroundColor Gray
+  Write-Host "teach" -ForegroundColor White
   Write-Host ""
 }
 
 if ($CodexDetected) {
-  Write-Host "Installing Teach for Codex..."
+  Set-TeachStatus "Installing for Codex"
   $MarketplaceData = (& codex plugin marketplace list --json | Out-String | ConvertFrom-Json)
   if ($MarketplaceData.marketplaces | Where-Object { $_.name -eq "teach" }) {
     & codex plugin marketplace upgrade teach | Out-Null
@@ -81,11 +114,12 @@ if ($CodexDetected) {
 }
 
 if (-not $ClaudeDetected) {
+  Set-TeachStatus "Finishing"
   Show-TeachReady
   return
 }
 
-Write-Host "Installing Teach for Claude Code..."
+Set-TeachStatus "Installing for Claude Code"
 
 $LocalSourceRoot = $null
 $SourceBaseUrl = if ($env:TEACH_SOURCE_BASE_URL) {
@@ -209,4 +243,5 @@ finally {
   }
 }
 
+Set-TeachStatus "Finishing"
 Show-TeachReady

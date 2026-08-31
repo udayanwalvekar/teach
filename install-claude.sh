@@ -68,32 +68,18 @@ done
 if [ -e "$destination" ]; then
   backup="${destination}.backup-$(date -u +%Y%m%d%H%M%S)-$$"
   mv "$destination" "$backup"
-  echo "Backed up the previous Teach skill to $backup"
+  if [ -z "${TEACH_QUIET_INSTALL:-}" ]; then
+    echo "Backed up the previous Teach skill to $backup"
+  fi
 fi
 
 mv "$staging_root/teach" "$destination"
 installed=true
 
 if [ -z "${TEACH_QUIET_INSTALL:-}" ] && [ -t 1 ] && [ "${TERM:-dumb}" != "dumb" ] && [ -z "${NO_COLOR:-}" ]; then
-  blue='\033[38;5;69m'
-  citron='\033[38;5;191m'
-  coral='\033[38;5;203m'
-  dim='\033[2m'
-  reset='\033[0m'
-
-  for frame in '·' '✦' '✦ ·' '✦ · ·' '✦ · · ✦'; do
-    printf "\r  ${blue}%s${reset}  ${dim}assembling your teacher…${reset}" "$frame"
-    sleep 0.09
-  done
-  printf '\r\033[2K'
-  printf "\n  ${blue}╭──────────────────────────────────────────╮${reset}\n"
-  printf "  ${blue}│${reset}  ${citron}✦${reset}  ${coral}TEACH IS READY${reset}                        ${blue}│${reset}\n"
-  printf "  ${blue}│${reset}     you built it. now understand it.      ${blue}│${reset}\n"
-  printf "  ${blue}╰──────────────────────────────────────────╯${reset}\n\n"
-  printf "  ${dim}Installed to %s${reset}\n" "$destination"
-  printf "  ${dim}Restart Claude Code, return to your build,${reset}\n"
-  printf "  then type  ${citron}teach${reset}\n\n"
+  printf '\n  \033[1m✓ Teach installed\033[0m\n'
+  printf '    Claude Code\n\n'
+  printf '    Restart Claude Code, then type: \033[1mteach\033[0m\n\n'
 elif [ -z "${TEACH_QUIET_INSTALL:-}" ]; then
-  echo "Installed Teach for Claude Code at $destination"
-  echo "Start or restart Claude Code, finish a build chat, then type teach"
+  echo "Teach is installed for Claude Code. Restart Claude Code, then type: teach"
 fi
