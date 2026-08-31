@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "prompt_version": 1,
+  "minimum_bootstrap_version": 1,
+  "bootstrap_api_version": 1,
+  "files": [
+    {
+      "path": "references/brand.md",
+      "sha256": "e6ddbb1616fe7486866e9ca4f3a05bc0ded689d6490443a94686fc85074c2c8e"
+    },
+    {
+      "path": "references/build-investigator.md",
+      "sha256": "408de4d45cb2fc0684450d9a3add24faa4b835b75c95b8aeb6ec613523d4b090"
+    },
+    {
+      "path": "references/build-map-format.md",
+      "sha256": "c51ab53ef06f44055646e0cac3509d019576dafc63b95cfdcd6f42b7860b5054"
+    },
+    {
+      "path": "references/learning-designer.md",
+      "sha256": "79c9275e03672ee41986abe0f89d7931c82da23d36154bf5db99c575f969dde0"
+    },
+    {
+      "path": "references/lesson-format.md",
+      "sha256": "c705d3bc71a5ed6cd4addd77f613c335abc819c6c5d7fe17c9e810affb2287ed"
+    },
+    {
+      "path": "references/teaching-method.md",
+      "sha256": "803d79ca43c56f4ce1d408d02792d79763fa477049957282bf3e0f152e3a9f16"
+    },
+    {
+      "path": "runtime/teach.md",
+      "sha256": "2c538bf9fc4859a01eb9ff784a4d9f1b990f29aa10be82b73ac4bc7f80626471"
+    }
+  ]
+}

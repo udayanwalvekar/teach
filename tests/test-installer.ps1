@@ -83,8 +83,36 @@ try {
   if (-not (Test-Path (Join-Path $TestHome ".claude/skills/teach/SKILL.md"))) {
     throw "Claude skill was not installed."
   }
+  foreach ($RelativePath in @(
+    "runtime/manifest.json",
+    "runtime/teach.md",
+    "scripts/resolve_runtime.py",
+    "scripts/resolve_runtime.ps1",
+    "scripts/resolve_runtime.sh"
+  )) {
+    if (-not (Test-Path (Join-Path $TestHome ".claude/skills/teach/$RelativePath"))) {
+      throw "Claude install is missing the dynamic prompt file: $RelativePath"
+    }
+  }
   if (Select-String -Quiet -SimpleMatch "disable-model-invocation: true" (Join-Path $TestHome ".claude/skills/teach/SKILL.md")) {
     throw "Claude install still disables bare teach invocation."
+  }
+  if (-not (Select-String -Quiet -SimpleMatch '${CLAUDE_SKILL_DIR}' (Join-Path $TestHome ".claude/skills/teach/SKILL.md"))) {
+    throw "Claude install does not map its concrete skill directory."
+  }
+
+  $PreviousDisableUpdates = $env:TEACH_DISABLE_UPDATES
+  $env:TEACH_DISABLE_UPDATES = "1"
+  try {
+    $InstalledResolver = Join-Path $TestHome ".claude/skills/teach/scripts/resolve_runtime.ps1"
+    $InstalledRuntime = (& $InstalledResolver | Out-String).Trim()
+  }
+  finally {
+    $env:TEACH_DISABLE_UPDATES = $PreviousDisableUpdates
+  }
+  $ExpectedRuntime = (Resolve-Path (Join-Path $TestHome ".claude/skills/teach/runtime/teach.md")).Path
+  if ($InstalledRuntime -ne $ExpectedRuntime) {
+    throw "Installed PowerShell resolver did not select the bundled prompt."
   }
 
   $ActionLines = @(Get-Content $Actions)
