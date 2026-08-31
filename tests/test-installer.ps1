@@ -8,6 +8,7 @@ $Actions = Join-Path $State "actions"
 $CurlLog = Join-Path $State "downloads"
 New-Item -ItemType Directory -Path $TestHome, $State | Out-Null
 New-Item -ItemType Directory -Path (Join-Path $TestHome ".claude") | Out-Null
+New-Item -ItemType File -Path $CurlLog | Out-Null
 
 $OriginalHome = $env:HOME
 $OriginalUserProfile = $env:USERPROFILE
