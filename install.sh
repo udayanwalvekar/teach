@@ -94,24 +94,29 @@ fi
 
 if [ "$claude_detected" = true ]; then
   echo "Installing Teach for Claude Code..."
+  source_root=""
+  source_base_url=""
   if [ -n "${TEACH_SOURCE_BASE_URL:-}" ]; then
     source_base_url=${TEACH_SOURCE_BASE_URL%/}
-  elif [ -n "${codex_marketplace_root:-}" ] && command -v git >/dev/null 2>&1; then
-    teach_revision=$(git -C "$codex_marketplace_root" rev-parse HEAD)
-    source_base_url="https://raw.githubusercontent.com/udayanwalvekar/teach/$teach_revision"
+  elif [ -n "${codex_marketplace_root:-}" ] && [ -f "$codex_marketplace_root/claude-files.txt" ]; then
+    source_root=$codex_marketplace_root
   else
-    revision_metadata="$download_root/revision.json"
-    download "https://api.github.com/repos/udayanwalvekar/teach/commits/main" "$revision_metadata"
-    teach_revision=$("$python_command" -c 'import json,sys; value=json.load(open(sys.argv[1])).get("sha", ""); print(value); raise SystemExit(len(value) != 40 or any(c not in "0123456789abcdef" for c in value))' "$revision_metadata")
-    if [ -z "$teach_revision" ]; then
-      echo "Teach could not resolve the current installer revision from GitHub." >&2
+    release_metadata="$download_root/release.json"
+    download "https://api.github.com/repos/udayanwalvekar/teach/releases/latest" "$release_metadata"
+    teach_release=$("$python_command" -c 'import json,re,sys; value=json.load(open(sys.argv[1])).get("tag_name", ""); print(value); raise SystemExit(not re.fullmatch(r"v[0-9]+\.[0-9]+\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?", value))' "$release_metadata")
+    if [ -z "$teach_release" ]; then
+      echo "Teach could not resolve the latest release from GitHub." >&2
       exit 1
     fi
-    source_base_url="https://raw.githubusercontent.com/udayanwalvekar/teach/$teach_revision"
+    source_base_url="https://raw.githubusercontent.com/udayanwalvekar/teach/$teach_release"
   fi
 
   manifest="$download_root/claude-files.txt"
-  download "$source_base_url/claude-files.txt" "$manifest"
+  if [ -n "$source_root" ]; then
+    cp "$source_root/claude-files.txt" "$manifest"
+  else
+    download "$source_base_url/claude-files.txt" "$manifest"
+  fi
 
   while IFS= read -r relative_path || [ -n "$relative_path" ]; do
     relative_path=$(printf '%s' "$relative_path" | tr -d '\r')
@@ -125,7 +130,15 @@ if [ "$claude_detected" = true ]; then
 
     local_path="$download_root/source/$relative_path"
     mkdir -p "$(dirname -- "$local_path")"
-    download "$source_base_url/$relative_path" "$local_path"
+    if [ -n "$source_root" ]; then
+      if [ ! -f "$source_root/$relative_path" ]; then
+        echo "The Teach marketplace is missing: $relative_path" >&2
+        exit 1
+      fi
+      cp "$source_root/$relative_path" "$local_path"
+    else
+      download "$source_base_url/$relative_path" "$local_path"
+    fi
   done < "$manifest"
 
   installer="$download_root/source/install-claude.sh"

@@ -64,9 +64,26 @@ if grep -F 'data.jsdelivr.com' "$curl_log" >/dev/null; then
   echo "Universal installer resolved Claude from a different release channel." >&2
   exit 1
 fi
-expected_revision=$(git -C "$repo" rev-parse HEAD)
-grep -F "https://raw.githubusercontent.com/udayanwalvekar/teach/$expected_revision/claude-files.txt" "$curl_log" >/dev/null
+if [ -s "$curl_log" ]; then
+  echo "Combined install should reuse the refreshed local Codex marketplace for Claude." >&2
+  exit 1
+fi
 backup_count=$(find "$test_home/.claude/skills" -maxdepth 1 -type d -name 'teach.backup-*' | wc -l | tr -d ' ')
 test "$backup_count" -eq 1
+
+claude_only_home="$test_root/claude-only-home"
+mkdir -p "$claude_only_home"
+: > "$curl_log"
+HOME="$claude_only_home" \
+PATH="$repo/tests/fixtures:$PATH" \
+TEACH_TEST_CURL_LOG="$curl_log" \
+TEACH_TEST_REPO="$repo" \
+TEACH_INSTALL_CODEX=0 \
+TEACH_INSTALL_CLAUDE=1 \
+TERM=dumb \
+sh "$repo/install.sh" >/dev/null
+test -f "$claude_only_home/.claude/skills/teach/SKILL.md"
+grep -Fx 'https://api.github.com/repos/udayanwalvekar/teach/releases/latest' "$curl_log" >/dev/null
+grep -Fx 'https://raw.githubusercontent.com/udayanwalvekar/teach/v0.6.1/claude-files.txt' "$curl_log" >/dev/null
 
 echo "Universal installer fresh-install and update checks passed."

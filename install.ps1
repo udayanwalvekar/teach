@@ -87,21 +87,19 @@ if (-not $ClaudeDetected) {
 
 Write-Host "Installing Teach for Claude Code..."
 
+$LocalSourceRoot = $null
 $SourceBaseUrl = if ($env:TEACH_SOURCE_BASE_URL) {
   $env:TEACH_SOURCE_BASE_URL.TrimEnd("/")
-} elseif ($CodexMarketplaceRoot -and (Get-Command git -ErrorAction SilentlyContinue)) {
-  $TeachRevision = (& git -C $CodexMarketplaceRoot rev-parse HEAD).Trim()
-  if ($LASTEXITCODE -ne 0 -or $TeachRevision -notmatch "^[0-9a-f]{40}$") {
-    throw "Teach could not read the installed Codex marketplace revision."
-  }
-  "https://raw.githubusercontent.com/udayanwalvekar/teach/$TeachRevision"
+} elseif ($CodexMarketplaceRoot -and (Test-Path -LiteralPath (Join-Path $CodexMarketplaceRoot "claude-files.txt") -PathType Leaf)) {
+  $LocalSourceRoot = $CodexMarketplaceRoot
+  $null
 } else {
-  $Commit = Invoke-RestMethod -UseBasicParsing -Uri "https://api.github.com/repos/udayanwalvekar/teach/commits/main"
-  $TeachRevision = [string]$Commit.sha
-  if ($TeachRevision -notmatch "^[0-9a-f]{40}$") {
-    throw "GitHub returned an invalid Teach revision: $TeachRevision"
+  $Release = Invoke-RestMethod -UseBasicParsing -Uri "https://api.github.com/repos/udayanwalvekar/teach/releases/latest"
+  $TeachRelease = [string]$Release.tag_name
+  if ($TeachRelease -notmatch "^v[0-9]+\.[0-9]+\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$") {
+    throw "GitHub returned an invalid Teach release: $TeachRelease"
   }
-  "https://raw.githubusercontent.com/udayanwalvekar/teach/$TeachRevision"
+  "https://raw.githubusercontent.com/udayanwalvekar/teach/$TeachRelease"
 }
 $Destination = if ($env:TEACH_CLAUDE_DESTINATION) {
   $env:TEACH_CLAUDE_DESTINATION
@@ -155,7 +153,11 @@ function Resolve-TeachSourcePath {
 try {
   New-Item -ItemType Directory -Path $SourceRoot | Out-Null
 
-  Invoke-WebRequest -UseBasicParsing -Uri "$SourceBaseUrl/claude-files.txt" -OutFile $ManifestPath
+  if ($LocalSourceRoot) {
+    Copy-Item -LiteralPath (Join-Path $LocalSourceRoot "claude-files.txt") -Destination $ManifestPath
+  } else {
+    Invoke-WebRequest -UseBasicParsing -Uri "$SourceBaseUrl/claude-files.txt" -OutFile $ManifestPath
+  }
   $ManifestEntries = @(Get-Content -Path $ManifestPath | ForEach-Object { $_.Trim() } | Where-Object {
     $_ -and -not $_.StartsWith("#")
   })
@@ -167,7 +169,15 @@ try {
     $TargetPath = Resolve-TeachSourcePath -RelativePath $RelativePath
     $TargetParent = Split-Path -Parent $TargetPath
     New-Item -ItemType Directory -Force -Path $TargetParent | Out-Null
-    Invoke-WebRequest -UseBasicParsing -Uri (Get-TeachDownloadUrl -RelativePath $RelativePath) -OutFile $TargetPath
+    if ($LocalSourceRoot) {
+      $LocalSourcePath = Join-Path $LocalSourceRoot ($RelativePath.Replace("/", [IO.Path]::DirectorySeparatorChar))
+      if (-not (Test-Path -LiteralPath $LocalSourcePath -PathType Leaf)) {
+        throw "The Teach marketplace is missing: $RelativePath"
+      }
+      Copy-Item -LiteralPath $LocalSourcePath -Destination $TargetPath
+    } else {
+      Invoke-WebRequest -UseBasicParsing -Uri (Get-TeachDownloadUrl -RelativePath $RelativePath) -OutFile $TargetPath
+    }
   }
 
   $InstallerPath = Join-Path $SourceRoot "install-claude.ps1"
