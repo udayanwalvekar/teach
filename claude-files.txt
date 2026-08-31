@@ -4,9 +4,14 @@ plugins/teach/skills/teach/SKILL.md
 plugins/teach/skills/teach/assets/lesson-shell.html
 plugins/teach/skills/teach/assets/teach-logo.svg
 plugins/teach/skills/teach/assets/teach-mark.svg
+plugins/teach/skills/teach/examples/how-teach-works.build-map.json
 plugins/teach/skills/teach/examples/how-teach-works.lesson.json
 plugins/teach/skills/teach/references/brand.md
+plugins/teach/skills/teach/references/build-investigator.md
+plugins/teach/skills/teach/references/build-map-format.md
+plugins/teach/skills/teach/references/learning-designer.md
 plugins/teach/skills/teach/references/lesson-format.md
 plugins/teach/skills/teach/references/teaching-method.md
 plugins/teach/skills/teach/scripts/build_lesson.py
 plugins/teach/skills/teach/scripts/serve_lesson.py
+plugins/teach/skills/teach/scripts/validate_build_map.py

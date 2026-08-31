@@ -1,9 +1,9 @@
 interface:
   display_name: "Teach"
-  short_description: "Understand what you built and how it works"
+  short_description: "Learn what you built from verified evidence"
   icon_small: "./assets/teach-mark.svg"
   icon_large: "./assets/teach-logo.svg"
   brand_color: "#222222"
-  default_prompt: "Use $teach to explain the problem, what I built, and how it works in a short visual local page."
+  default_prompt: "Use $teach to investigate this build first, then have a separate agent teach it to me like I am 18 with one real example and a simple system diagram."
 policy:
   allow_implicit_invocation: false

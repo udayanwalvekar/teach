@@ -1,40 +1,55 @@
 # Teaching method
 
-Teach gives a builder one clear mental model of what they just made. The page should take about three minutes to understand.
+Teach should leave the builder with a usable mental model, not recognition of a product pitch. The module should take three to five minutes.
 
-## The three-part story
+## Begin with an outcome
+
+Tell the learner what they will be able to explain by the end. Use a concrete verb such as **trace**, **distinguish**, or **explain**.
+
+## Use three connected parts
 
 ### 1. The problem
 
-Explain why the work started. Use the builder's situation, not a generic industry problem.
+Explain the builder's real starting difficulty once. Do not repeat it in later sections.
 
-### 2. What you built
+### 2. What changed
 
-Name the finished capability in plain language. Describe what it lets someone do before mentioning files, frameworks, or implementation details.
+Name the finished capability and show one evidence-backed transformation:
+
+- **Before:** the real state before the build
+- **After:** what the build makes possible now
+- **Why it matters:** the important change in one sentence
+
+Use measured quantities only when the build map proves them.
 
 ### 3. How it works
 
-Follow one real use from start to finish: the trigger, what receives it, one or two important decisions, and the visible result. Show this as three to five steps.
+Trace one action from trigger to visible result in three to five diagram steps. Each step has a system-area label so the learner can see where work happens.
 
-## Keep only useful technology
+- For a full-stack path, use areas such as Frontend, Backend, and Third-party service only where they exist.
+- For a change inside one layer, name that layer's actual pieces instead.
+- Explain a technology inside the step where it performs work. Cite evidence shared by the technology and that step. Do not move technologies into a detached list.
 
-If a technology matters to the mental model, explain it in one sentence that a curious 18-year-old can understand. Include no more than six. Do not define ordinary words or turn the page into a dictionary.
+## Create recall without a quiz
+
+End with one question that asks the learner to predict or explain the central transformation in their own words. Hide the short answer behind a familiar disclosure control. There are no options, scores, grades, or trick questions.
 
 ## Editing test
 
-Delete anything that does not answer one of these questions:
+Remove any sentence that does not improve one of these:
 
-- Why was this needed?
-- What did the builder make?
-- What happens after someone uses it?
+- the learning goal
+- the before-and-after transformation
+- the learner's picture of the system
+- the final recall check
 
-State facts directly. Avoid instructions such as "trace the action" or "click to understand" when the explanation itself can simply say what happens.
+Use ordinary language before technical names. Avoid praise, sales language, analogies that introduce a second system, and implementation trivia.
 
 ## Final check
 
-- Exactly three parts: problem, what you built, how it works.
-- The working flow has three to five steps.
-- Each part uses at most one short paragraph and one takeaway.
-- Each technology explanation is one sentence.
-- No quiz, playground, score, inline glossary, or extra exercise.
-- Every claim comes from the conversation or confirmed project files, not a guess.
+- Every visible factual claim points to valid build-map evidence.
+- The module contains exactly three connected parts.
+- The worked example is real, not a made-up metric.
+- The diagram contains three to five steps and honest system boundaries.
+- Relevant technologies appear only in the step where they do work.
+- The page uses the verified local-generation privacy statement.

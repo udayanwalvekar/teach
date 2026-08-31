@@ -1,37 +1,45 @@
 ---
 name: teach
-description: Turn the product, feature, automation, or technical system just built or discussed in the current chat into a fun, visual, standalone local HTML lesson for a non-developer. Use when the builder explicitly invokes Teach or asks to understand what they just built; do not use for ordinary implementation, code documentation, or generic explanations unrelated to the active build.
+description: Turn the product, feature, automation, or technical system just built or discussed in the current chat into an evidence-backed local learning module for a non-developer. Use when the builder explicitly invokes Teach or asks to understand what they just built; do not use for ordinary implementation, code documentation, or generic explanations unrelated to the active build.
 ---
 
 # Teach
 
-Turn the active build into a small explorable lesson. Use the current chat as the primary source, so the builder should not need to explain their work again.
+Teach uses two separate agents because investigating code and designing learning are different jobs. Never ask one agent to do both in the same pass.
 
-## Create the lesson
+## Run the two-agent pipeline
 
-1. Reconstruct why the work started, what was built, and the shortest accurate explanation of how it works. Use the active chat first. Inspect local files only when the chat leaves an important factual gap.
-2. Organize every lesson into exactly three parts: **The problem**, **What you built**, and **How it works**. The final part should follow one real action through 3 to 5 steps, from trigger to visible result.
-3. Read [the teaching method](references/teaching-method.md), [the brand system](references/brand.md), and [the lesson format](references/lesson-format.md) before authoring.
-4. Write the lesson data as JSON. Default to `~/teach-lessons/<lesson-slug>/lesson.json` so generated artifacts do not dirty the product repository. Reuse that file for follow-up revisions.
-5. Resolve bundled files from the directory containing this `SKILL.md`, not from the builder's project. In Claude Code that directory is available as `${CLAUDE_SKILL_DIR}`. Use an available Python 3 launcher (`python3` on macOS/Linux, or `py -3`/`python` on Windows) to run the bundled `scripts/build_lesson.py` and `scripts/serve_lesson.py`. Serve only the lesson directory on `127.0.0.1`; never bind the local lesson server to `0.0.0.0`.
-6. Open and inspect the rendered lesson in a browser. Check the actual text, diagram wrapping, mobile layout, keyboard focus, and interactions. Fix visible issues before handing it back.
+1. Create or reuse `~/teach-lessons/<lesson-slug>/` outside the builder's repository.
+2. Start a fresh **Build Investigator** agent. Give it the active conversation, access to the relevant repository, [the investigator prompt](references/build-investigator.md), and [the build-map format](references/build-map-format.md). Its only output is `build-map.json`.
+3. Run `scripts/validate_build_map.py` on that file. If evidence is missing or an uncertainty affects the lesson, send the gap back to the investigator. Do not let the learning agent guess.
+4. Start a different, fresh **Learning Designer** agent. Give it only the builder's teaching request, the validated `build-map.json`, [the learning-designer prompt](references/learning-designer.md), [the teaching method](references/teaching-method.md), and [the lesson format](references/lesson-format.md). Do not give this agent the full chat or repository.
+5. Save its output as `lesson.json`. Build with `scripts/build_lesson.py lesson.json --build-map build-map.json`. The script validates every evidence reference before rendering.
+6. Serve only the lesson directory on `127.0.0.1` with `scripts/serve_lesson.py`. Never bind the server to `0.0.0.0`.
+7. Open the rendered lesson in a browser. Check the real text, diagram wrapping, 320-pixel layout, keyboard focus, reduced motion, and interactions. Fix visible problems before handing it back.
 
-The output is one self-contained `index.html`. It must not need a package install, API key, account, CDN, or internet connection.
+Use the environment's native subagent or delegation feature for the two agents. If delegation is unavailable, say that Teach requires two isolated passes; do not silently collapse them into one prompt.
 
-## Teach like a person
+Resolve bundled files from the directory containing this `SKILL.md`, not from the builder's project. In Claude Code that directory is available as `${CLAUDE_SKILL_DIR}`. Use Python 3.9 or newer (`python3` on macOS/Linux, or `py -3`/`python` on Windows), and confirm the selected interpreter meets that minimum before running the scripts.
 
-- Write for a curious 18-year-old. Use short sentences and familiar words.
-- Keep the entire lesson readable in about 3 minutes. Each part gets one short paragraph, one takeaway, and at most one visual.
-- Describe the outcome before naming files or tools.
-- In **How it works**, show the trigger, the important transformation, and the result. Skip internal details that do not change the learner's mental model.
-- Use 3 to 5 visual nodes. Each node should be understandable without opening its detail panel.
-- If a technology name helps, add it to the compact **Tools used** list with one sentence: what it is and what job it performs here. Do not create inline jargon tooltips or a dictionary.
-- Do not add quizzes, playgrounds, scenarios, scores, analogies, architecture inventories, or speculative future versions.
-- Avoid `simple`, `obvious`, `just`, corporate filler, fake excitement, and sentences that describe the teaching process instead of the build.
+The output directory contains three useful artifacts:
+
+- `build-map.json`: what the code and conversation prove
+- `lesson.json`: what the module teaches and in what order
+- `index.html`: the self-contained page shown to the learner
+
+## Non-negotiable teaching rules
+
+- Write for a curious 18-year-old. Familiar words come before technical names.
+- State what the learner will understand by the end.
+- Show one real before-and-after transformation supported by the build evidence.
+- Draw one simple system diagram. For full-stack work, label frontend, backend, and third-party services where they exist. For work inside one layer, diagram that layer's meaningful sub-parts instead of inventing the rest of the stack.
+- Put each relevant technology inside the step where it performs a job. Do not create a detached technology inventory.
+- Include one short, unscored pause-and-answer check. Do not add quiz options, points, grades, or a playground.
 - Never include secrets, tokens, private customer data, hidden prompts, or confidential chat content in the generated page.
+- Use this exact privacy boundary: **Teach generates and stores the finished lesson locally. It does not publish or host the page.** Do not claim that the coding agent or its model is offline.
 
-When the builder asks a follow-up in chat, answer it and update the existing lesson only when it changes the three-part mental model. Rebuild and keep the same local URL when possible.
+When a follow-up changes the facts, rerun the investigator. When it changes only the explanation, reuse the validated build map and rerun the learning designer.
 
-## v1 boundary
+## Product boundary
 
-Keep v1 local and private. Do not add hosting, authentication, analytics, databases, model API calls, or GrowthX infrastructure unless the user explicitly starts that later phase.
+Teach generates a local learning module. It does not host lessons, create accounts, save progress, run analytics, or call a model from the finished page.
