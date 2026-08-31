@@ -28,6 +28,18 @@ codex plugin add teach@teach
 
 start a new thread after installation so Codex loads the skill into the command picker.
 
+## update Teach
+
+Codex keeps the marketplace snapshot and the installed plugin as separate copies. refresh the marketplace, replace the installed copy, then start a new thread:
+
+```sh
+codex plugin marketplace upgrade teach
+codex plugin remove teach@teach
+codex plugin add teach@teach
+```
+
+Claude Code users update by running the current one-command installer from the repository README again. the installer backs up the existing skill before replacing it; restart Claude Code afterward.
+
 ## teaching style
 
 teach uses a quiet black-and-white paper style: clear system type, thin rules, familiar controls, and no decorative color competing with the lesson.
