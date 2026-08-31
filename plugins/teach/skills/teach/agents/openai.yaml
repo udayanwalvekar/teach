@@ -4,6 +4,6 @@ interface:
   icon_small: "./assets/teach-mark.svg"
   icon_large: "./assets/teach-logo.svg"
   brand_color: "#222222"
-  default_prompt: "Use $teach to investigate this build first, then have a separate agent teach it to me like I am 18 with one real example and a simple system diagram."
+  default_prompt: "Use $teach to teach me what I built."
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

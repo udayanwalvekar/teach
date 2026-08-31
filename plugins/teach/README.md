@@ -8,37 +8,23 @@ Teach uses two separate agents. the first investigates the conversation and code
 
 ## use it
 
-finish building something, then run Teach in the same chat:
-
-- **Codex:** type `$teach`, or open the `/` command picker and choose **Teach**.
-- **Claude Code:** type `/teach` after installing this skill into `~/.claude/skills/teach/`.
+finish building something, then type `teach` in the same chat. that is the whole prompt; the teaching rules are already part of the skill.
 
 Teach requires Python 3.9 or newer to build and serve its local lesson.
 
 teach preserves `build-map.json`, `lesson.json`, and a standalone `index.html` under `~/teach-lessons/`. Teach generates and stores the finished lesson locally. It does not publish or host the page.
 
-## install it from github
-
-add the public marketplace, then install teach:
+## install
 
 ```sh
-codex plugin marketplace add udayanwalvekar/teach
-codex plugin add teach@teach
+curl -fsSL https://raw.githubusercontent.com/udayanwalvekar/teach/main/install.sh | sh
 ```
 
-start a new thread after installation so Codex loads the skill into the command picker.
+the installer detects Codex and Claude Code and installs or updates Teach for every detected agent. restart the agent after installation.
 
 ## update Teach
 
-Codex keeps the marketplace snapshot and the installed plugin as separate copies. refresh the marketplace, replace the installed copy, then start a new thread:
-
-```sh
-codex plugin marketplace upgrade teach
-codex plugin remove teach@teach
-codex plugin add teach@teach
-```
-
-Claude Code users update by running the current one-command installer from the repository README again. the installer backs up the existing skill before replacing it; restart Claude Code afterward.
+run the same install command again, then restart the agent.
 
 ## teaching style
 

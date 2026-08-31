@@ -1,6 +1,6 @@
 {
   "name": "teach",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Turn verified build evidence into a learning module you can remember.",
   "author": {
     "name": "Udayan Walvekar",
@@ -22,6 +22,6 @@
     "brandColor": "#222222",
     "composerIcon": "./skills/teach/assets/teach-mark.svg",
     "logo": "./skills/teach/assets/teach-logo.svg",
-    "defaultPrompt": "Investigate this build first, then have a separate agent teach it to me like I am 18 with one real example and a simple system diagram."
+    "defaultPrompt": "teach"
   }
 }
