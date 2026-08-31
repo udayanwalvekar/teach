@@ -12,8 +12,10 @@ New-Item -ItemType File -Path $CurlLog | Out-Null
 
 $OriginalHome = $env:HOME
 $OriginalUserProfile = $env:USERPROFILE
+$OriginalNoColor = $env:NO_COLOR
 $env:HOME = $TestHome
 $env:USERPROFILE = $TestHome
+$env:NO_COLOR = "1"
 
 function global:codex {
   $CommandLine = $args -join " "
@@ -78,8 +80,8 @@ function global:Invoke-WebRequest {
 }
 
 try {
-  & (Join-Path $Repo "install.ps1")
-  & (Join-Path $Repo "install.ps1")
+  $FirstInstallOutput = (& (Join-Path $Repo "install.ps1") | Out-String)
+  $UpdateOutput = (& (Join-Path $Repo "install.ps1") | Out-String)
 
   if (-not (Test-Path (Join-Path $TestHome ".claude/skills/teach/SKILL.md"))) {
     throw "Claude skill was not installed."
@@ -126,6 +128,12 @@ try {
   if (@(Get-ChildItem (Join-Path $TestHome ".claude/skills") -Directory -Filter "teach.backup-*").Count -ne 1) {
     throw "Claude update should create exactly one backup."
   }
+  if ($UpdateOutput -match "Backed up|\.backup-") {
+    throw "Universal PowerShell update exposed its internal Claude backup path."
+  }
+  if ($UpdateOutput -notmatch "Teach is installed for Codex \+ Claude Code") {
+    throw "Universal PowerShell update did not report the installed agents."
+  }
 
   if ((Get-Item $CurlLog).Length -ne 0) {
     throw "Combined install should reuse the refreshed local Codex marketplace for Claude."
@@ -149,6 +157,7 @@ finally {
   Remove-Item Env:TEACH_TEST_FAIL_ACTION -ErrorAction SilentlyContinue
   $env:HOME = $OriginalHome
   $env:USERPROFILE = $OriginalUserProfile
+  $env:NO_COLOR = $OriginalNoColor
   Remove-Item -Recurse -Force -Path $TestRoot -ErrorAction SilentlyContinue
   Remove-Item Function:codex -ErrorAction SilentlyContinue
   Remove-Item Function:Invoke-WebRequest -ErrorAction SilentlyContinue
