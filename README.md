@@ -16,6 +16,8 @@ teach
 
 that is the whole prompt. the teaching level, relevant technologies, and honest system diagram are part of Teach itself.
 
+each time `teach` starts, it checks a small public manifest on GitHub. if the teaching prompt changed, Teach verifies and caches the new prompt before continuing. if GitHub is unavailable, it immediately uses the last-known-good or bundled prompt. the check downloads only Teach's public instructions; it never sends the conversation, repository, paths, or lesson data to GitHub.
+
 teach preserves `build-map.json`, `lesson.json`, and a standalone `index.html` under `~/teach-lessons/`. Teach generates and stores the finished lesson locally. It does not publish or host the page.
 
 ## install
@@ -36,7 +38,9 @@ irm https://raw.githubusercontent.com/udayanwalvekar/teach/main/install.ps1 | ie
 
 ## update Teach
 
-run the same install command again. it refreshes every detected installation and keeps a timestamped backup of any replaced Claude Code skill.
+prompt improvements arrive automatically the next time someone types `teach`; no reinstall or restart is needed. set `TEACH_DISABLE_UPDATES=1` before starting the coding agent to stay on the prompt bundled with the installed version.
+
+run the same install command again for new renderers, assets, installer behavior, or other executable changes. it refreshes every detected installation and keeps a timestamped backup of any replaced Claude Code skill.
 
 ## teaching style
 
@@ -51,3 +55,5 @@ v1 does not host lessons on GrowthX, save progress across devices, or answer que
 ## package shape
 
 this repository ships the same Teach skill for both coding agents: as a Codex plugin and as a personal Claude Code skill. Teach delegates investigation and learning design to two fresh agents, then uses dependency-free Python and a self-contained HTML shell for validation and rendering.
+
+to publish a teaching-prompt change, edit `runtime/teach.md` or the Markdown files under `references/`, then run `python3 plugins/teach/skills/teach/scripts/build_runtime_manifest.py` and commit the refreshed manifest with the prompt. if a prompt requires new renderer or validator behavior, ship a new installer version instead of marking it compatible with the existing bootstrap.

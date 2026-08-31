@@ -59,7 +59,7 @@ trap 'exit 1' HUP INT TERM
 mkdir "$staging_root/teach"
 cp "$source_dir/SKILL.md" "$staging_root/teach/SKILL.md"
 printf '\n## Builder request\n\n$ARGUMENTS\n' >> "$staging_root/teach/SKILL.md"
-for resource_dir in assets examples references scripts; do
+for resource_dir in assets examples references runtime scripts; do
   if [ -d "$source_dir/$resource_dir" ]; then
     cp -R "$source_dir/$resource_dir" "$staging_root/teach/$resource_dir"
   fi

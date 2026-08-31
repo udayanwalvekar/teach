@@ -12,6 +12,10 @@ plugins/teach/skills/teach/references/build-map-format.md
 plugins/teach/skills/teach/references/learning-designer.md
 plugins/teach/skills/teach/references/lesson-format.md
 plugins/teach/skills/teach/references/teaching-method.md
+plugins/teach/skills/teach/runtime/manifest.json
+plugins/teach/skills/teach/runtime/teach.md
 plugins/teach/skills/teach/scripts/build_lesson.py
+plugins/teach/skills/teach/scripts/build_runtime_manifest.py
+plugins/teach/skills/teach/scripts/resolve_runtime.py
 plugins/teach/skills/teach/scripts/serve_lesson.py
 plugins/teach/skills/teach/scripts/validate_build_map.py

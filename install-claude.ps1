@@ -54,7 +54,7 @@ try {
     [Text.UTF8Encoding]::new($false)
   )
 
-  foreach ($ResourceDir in @("assets", "examples", "references", "scripts")) {
+  foreach ($ResourceDir in @("assets", "examples", "references", "runtime", "scripts")) {
     $ResourceSource = Join-Path $SourceDir $ResourceDir
     if (Test-Path $ResourceSource -PathType Container) {
       Copy-Item -Recurse -Path $ResourceSource -Destination (Join-Path $StagedSkill $ResourceDir)

@@ -83,6 +83,15 @@ try {
   if (-not (Test-Path (Join-Path $TestHome ".claude/skills/teach/SKILL.md"))) {
     throw "Claude skill was not installed."
   }
+  foreach ($RelativePath in @(
+    "runtime/manifest.json",
+    "runtime/teach.md",
+    "scripts/resolve_runtime.py"
+  )) {
+    if (-not (Test-Path (Join-Path $TestHome ".claude/skills/teach/$RelativePath"))) {
+      throw "Claude install is missing the dynamic prompt file: $RelativePath"
+    }
+  }
   if (Select-String -Quiet -SimpleMatch "disable-model-invocation: true" (Join-Path $TestHome ".claude/skills/teach/SKILL.md")) {
     throw "Claude install still disables bare teach invocation."
   }

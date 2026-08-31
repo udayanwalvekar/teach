@@ -24,7 +24,9 @@ the installer detects Codex and Claude Code and installs or updates Teach for ev
 
 ## update Teach
 
-run the same install command again, then restart the agent.
+teaching-prompt improvements are checked, verified, and cached automatically whenever `teach` starts. if GitHub is unavailable, Teach uses the last-known-good or bundled prompt. this check never sends the conversation or project data to GitHub. set `TEACH_DISABLE_UPDATES=1` to stay on the bundled prompt.
+
+run the same install command again, then restart the agent, when Teach ships new renderer scripts, assets, or other executable behavior.
 
 ## teaching style
 

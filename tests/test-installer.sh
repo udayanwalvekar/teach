@@ -38,6 +38,12 @@ printf '%s\n' "$first_output" | grep -F 'type: teach' >/dev/null
 test -f "$codex_state/marketplace"
 test -f "$codex_state/plugin"
 test -f "$test_home/.claude/skills/teach/SKILL.md"
+test -f "$test_home/.claude/skills/teach/runtime/manifest.json"
+test -f "$test_home/.claude/skills/teach/runtime/teach.md"
+test -f "$test_home/.claude/skills/teach/scripts/resolve_runtime.py"
+installed_runtime=$(TEACH_DISABLE_UPDATES=1 python3 "$test_home/.claude/skills/teach/scripts/resolve_runtime.py")
+expected_installed_runtime=$(python3 -c 'from pathlib import Path; import sys; print(Path(sys.argv[1]).resolve())' "$test_home/.claude/skills/teach/runtime/teach.md")
+test "$installed_runtime" = "$expected_installed_runtime"
 if grep -F 'disable-model-invocation: true' "$test_home/.claude/skills/teach/SKILL.md" >/dev/null; then
   echo "Claude install still disables the bare teach invocation." >&2
   exit 1
